@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Raphael Sonabend" />
+
+
+<title>Survival Analysis in mlr3proba</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Survival Analysis in mlr3proba</h1>
+<h4 class="author">Raphael Sonabend</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#a-very-quick-introduction-to-survival-analysis">A very quick introduction to survival analysis</a></li>
+<li><a href="#survival-tasks">Survival Tasks</a></li>
+<li><a href="#train-and-predict">Train and Predict</a></li>
+<li><a href="#evaluate---crank-lp-and-distr">Evaluate - crank, lp, and distr</a><ul>
+<li><a href="#probability-distributions-with-distr6">Probability distributions with distr6</a></li>
+</ul></li>
+<li><a href="#composition">Composition</a><ul>
+<li><a href="#pipeopdistrcompositor">PipeOpDistrCompositor</a></li>
+<li><a href="#pipeopcrankcompositor">PipeOpCrankCompositor</a></li>
+</ul></li>
+<li><a href="#all-together-now">All Together Now</a></li>
+</ul>
+</div>
+
+<p>This vignette is an introduction to performing survival analysis in <strong>mlr3proba</strong>.</p>
+<div id="a-very-quick-introduction-to-survival-analysis" class="section level2">
+<h2>A very quick introduction to survival analysis</h2>
+<p>Survival analysis is a sub-field of supervised machine learning in which the aim is to predict the survival distribution of a given individual. Arguably the main feature of survival analysis is that unlike classification and regression, learners are trained on two features: 1. the time until the event takes place, 2. the event type: either censoring or death. At a particular time-point, an individual is either: alive, dead, or censored. Censoring occurs if it is unknown if an individual is alive or dead. For example, say we are interested in patients in hospital and every day it is recorded if they are alive or dead, then after a patient leaves it is unknown if they are alive or dead, hence they are censored.</p>
+<p>In the case that there is no censoring, but a predicted probability distribution is still the goal, then probabilistic regression learners are advised instead.</p>
+</div>
+<div id="survival-tasks" class="section level2">
+<h2>Survival Tasks</h2>
+<p>Unlike <code>TaskClassif</code> and <code>TaskRegr</code> which have a single ‘target’ argument, <code>TaskSurv</code> mimics the <code>survival::Surv</code> object and has three-four target arguments (dependent on censoring type)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(mlr3proba); <span class="kw">library</span>(mlr3); <span class="kw">library</span>(survival)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># type = &quot;right&quot; is default</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">TaskSurv<span class="op">$</span><span class="kw">new</span>(<span class="dt">id =</span> <span class="st">&quot;right_censored&quot;</span>, <span class="dt">backend =</span> survival<span class="op">::</span>rats,</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">             <span class="dt">time =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">event =</span> <span class="st">&quot;status&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;right&quot;</span>)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; &lt;TaskSurv:right_censored&gt; (300 x 5)</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; * Target: time, status</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; * Properties: -</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt; * Features (3):</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt;   - int (1): litter</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;   - dbl (1): rx</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;   - chr (1): sex</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">task =<span class="st"> </span>TaskSurv<span class="op">$</span><span class="kw">new</span>(<span class="dt">id =</span> <span class="st">&quot;interval_censored&quot;</span>, <span class="dt">backend =</span> survival<span class="op">::</span>bladder2[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">7</span>)],</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">                    <span class="dt">time =</span> <span class="st">&quot;start&quot;</span>, <span class="dt">time2 =</span> <span class="st">&quot;stop&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;interval2&quot;</span>)</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">task</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; &lt;TaskSurv:interval_censored&gt; (178 x 6)</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; * Target: start, stop</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; * Properties: -</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; * Features (4):</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt;   - dbl (2): enum, rx</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co">#&gt;   - int (2): number, size</span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">task<span class="op">$</span><span class="kw">truth</span>()[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"><span class="co">#&gt;  [1] [0,  1] [0,  4] [0,  7] [0, 10] [0,  6] [6, 10] [0, 14] [0, 18] [0,  5]</span></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co">#&gt; [10] [5, 18]</span></a></code></pre></div>
+</div>
+<div id="train-and-predict" class="section level2">
+<h2>Train and Predict</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># create task and learner</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">veteran =<span class="st"> </span>mlr3misc<span class="op">::</span><span class="kw">load_dataset</span>(<span class="st">&quot;veteran&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;survival&quot;</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">task_veteran =<span class="st"> </span>TaskSurv<span class="op">$</span><span class="kw">new</span>(<span class="dt">id =</span> <span class="st">&quot;veteran&quot;</span>, <span class="dt">backend =</span> veteran, <span class="dt">time =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">event =</span> <span class="st">&quot;status&quot;</span>)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">learner =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.coxph&quot;</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co"># train/test split </span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">train_set =<span class="st"> </span><span class="kw">sample</span>(task_veteran<span class="op">$</span>nrow, <span class="fl">0.8</span> <span class="op">*</span><span class="st"> </span>task_veteran<span class="op">$</span>nrow)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">test_set =<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">seq_len</span>(task_veteran<span class="op">$</span>nrow), train_set)</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co"># fit Cox PH and inspect model</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15">learner<span class="op">$</span><span class="kw">train</span>(task_veteran, <span class="dt">row_ids =</span> train_set)</a>
+<a class="sourceLine" id="cb2-16" data-line-number="16">learner<span class="op">$</span>model</a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; survival::coxph(formula = task$formula(), data = task$data(), </span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;     x = TRUE)</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;                        coef exp(coef)  se(coef)      z        p</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; age               -0.007685  0.992345  0.011751 -0.654 0.513130</span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt; celltypesmallcell  0.976473  2.655076  0.317421  3.076 0.002096</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt; celltypeadeno      1.173923  3.234657  0.354138  3.315 0.000917</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt; celltypelarge      0.460501  1.584868  0.334837  1.375 0.169039</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt; diagtime           0.001186  1.001187  0.009848  0.120 0.904155</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#&gt; karno             -0.029826  0.970614  0.006497 -4.590 4.42e-06</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co">#&gt; prior              0.010400  1.010454  0.026531  0.392 0.695071</span></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co">#&gt; trt                0.225305  1.252705  0.247522  0.910 0.362695</span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co">#&gt; Likelihood ratio test=47.36  on 8 df, p=1.307e-07</span></a>
+<a class="sourceLine" id="cb2-32" data-line-number="32"><span class="co">#&gt; n= 109, number of events= 100</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="co"># make predictions for new data</span></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb2-36" data-line-number="36">prediction =<span class="st"> </span>learner<span class="op">$</span><span class="kw">predict</span>(task_veteran, <span class="dt">row_ids =</span> test_set)</a>
+<a class="sourceLine" id="cb2-37" data-line-number="37">prediction</a>
+<a class="sourceLine" id="cb2-38" data-line-number="38"><span class="co">#&gt; &lt;PredictionSurv&gt; for 28 observations:</span></a>
+<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="co">#&gt;     row_id time status      crank                distr         lp</span></a>
+<a class="sourceLine" id="cb2-40" data-line-number="40"><span class="co">#&gt;          3  228   TRUE -0.6936862 &lt;VectorDistribution&gt; -0.6936862</span></a>
+<a class="sourceLine" id="cb2-41" data-line-number="41"><span class="co">#&gt;          4  126   TRUE -0.7746938 &lt;VectorDistribution&gt; -0.7746938</span></a>
+<a class="sourceLine" id="cb2-42" data-line-number="42"><span class="co">#&gt;          8  110   TRUE -1.4899216 &lt;VectorDistribution&gt; -1.4899216</span></a>
+<a class="sourceLine" id="cb2-43" data-line-number="43"><span class="co">#&gt; ---                                                              </span></a>
+<a class="sourceLine" id="cb2-44" data-line-number="44"><span class="co">#&gt;        119    7   TRUE  1.1495552 &lt;VectorDistribution&gt;  1.1495552</span></a>
+<a class="sourceLine" id="cb2-45" data-line-number="45"><span class="co">#&gt;        128   19   TRUE  0.9844033 &lt;VectorDistribution&gt;  0.9844033</span></a>
+<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co">#&gt;        137   49   TRUE  0.8945899 &lt;VectorDistribution&gt;  0.8945899</span></a></code></pre></div>
+</div>
+<div id="evaluate---crank-lp-and-distr" class="section level2">
+<h2>Evaluate - crank, lp, and distr</h2>
+<p>Every <code>PredictionSurv</code> object can predict one or more of:</p>
+<ul>
+<li><code>lp</code> - Linear predictor calculated as the fitted coefficients multiplied by the test data.</li>
+<li><code>distr</code> - Predicted survival distribution, either discrete or continuous. Implemented in <strong><a href="https://CRAN.R-project.org/package=distr6">distr6</a></strong>.</li>
+<li><code>crank</code> - Continuous risk ranking.</li>
+</ul>
+<p><code>lp</code> and <code>crank</code> can be used with measures of discrimination such as the concordance index. Whilst <code>lp</code> is a specific mathematical prediction, <code>crank</code> is any continuous ranking that identifies who is more or less likely to experience the event. So far the only implemented learner that only returns a continuous ranking is <code>surv.svm</code>. If a <code>PredictionSurv</code> returns an <code>lp</code> then the <code>crank</code> is identical to this. Otherwise <code>crank</code> is calculated as the expectation of the predicted survival distribution. Note that for linear proportional hazards models, the ranking (but not necessarily the <code>crank</code> score itself) given by <code>lp</code> and the expectation of <code>distr</code>, is identical.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># In the previous example, Cox model predicts `lp` so `crank` is identical</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">all</span>(prediction<span class="op">$</span>lp <span class="op">==</span><span class="st"> </span>prediction<span class="op">$</span>crank)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; [1] TRUE</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">prediction<span class="op">$</span>lp[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt;  [1] -0.69368619 -0.77469379 -1.48992162 -1.02294630  0.10603704  0.35349280</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt;  [7]  0.19769846 -0.24070498  1.61950353  0.02121054</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># These are evaluated with measures of discrimination and calibration.</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co"># As all PredictionSurv objects will return crank, Harrell's C is the default measure.</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">prediction<span class="op">$</span><span class="kw">score</span>()</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt; surv.harrellC </span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;     0.7526596</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co"># distr is evaluated with probabilistic scoring rules.</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">measure =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.graf&quot;</span>, <span class="st">&quot;surv.grafSE&quot;</span>), msr)</a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">prediction<span class="op">$</span><span class="kw">score</span>(measure)</a>
+<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;   surv.graf surv.grafSE </span></a>
+<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;   0.1249958   0.0129813</span></a>
+<a class="sourceLine" id="cb3-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co"># Often measures can be integrated over mutliple time-points, or return</span></a>
+<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co"># predictions for single time-points</span></a>
+<a class="sourceLine" id="cb3-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb3-26" data-line-number="26">measure =<span class="st"> </span><span class="kw">msr</span>(<span class="st">&quot;surv.graf&quot;</span>, <span class="dt">times =</span> <span class="dv">60</span>)</a>
+<a class="sourceLine" id="cb3-27" data-line-number="27">prediction<span class="op">$</span><span class="kw">score</span>(measure)</a>
+<a class="sourceLine" id="cb3-28" data-line-number="28"><span class="co">#&gt; surv.graf </span></a>
+<a class="sourceLine" id="cb3-29" data-line-number="29"><span class="co">#&gt; 0.1457346</span></a></code></pre></div>
+<div id="probability-distributions-with-distr6" class="section level3">
+<h3>Probability distributions with distr6</h3>
+<p>Predicted distributions are implemented in <strong><a href="https://CRAN.R-project.org/package=distr6">distr6</a></strong>, which contains functionality for plotting and further analysis of probability distributions. See <a href="https://alan-turing-institute.github.io/distr6/">here</a> for full tutorials. Briefly we will go over the most important parts for <strong>mlr3proba</strong>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">task =<span class="st"> </span><span class="kw">tgen</span>(<span class="st">&quot;simsurv&quot;</span>)<span class="op">$</span><span class="kw">generate</span>(<span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">learner =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.coxph&quot;</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co"># In general it is not advised to train/predict on same data</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">prediction =<span class="st"> </span>learner<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co"># The predicted `distr` is a VectorDistribution consisting of 300 separate distributions</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">prediction<span class="op">$</span>distr</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; WeightDisc1 WeightDisc2 ... WeightDisc19 WeightDisc20</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co"># These can be extracted and queried either invidually...</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">prediction<span class="op">$</span>distr[<span class="dv">1</span>]<span class="op">$</span><span class="kw">survival</span>(<span class="dv">60</span><span class="op">:</span><span class="dv">70</span>)</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="co">#&gt;  [1] 0 0 0 0 0 0 0 0 0 0 0</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">prediction<span class="op">$</span>distr[<span class="dv">1</span>]<span class="op">$</span><span class="kw">mean</span>()</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#&gt; [1] 1.694734</span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co"># ...or together</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22">prediction<span class="op">$</span>distr<span class="op">$</span><span class="kw">cdf</span>(<span class="dv">60</span>)[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co">#&gt;    WeightDisc1 WeightDisc2 WeightDisc3 WeightDisc4 WeightDisc5 WeightDisc6</span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">#&gt; 1:           1           1           1           1           1           1</span></a>
+<a class="sourceLine" id="cb4-25" data-line-number="25"><span class="co">#&gt;    WeightDisc7 WeightDisc8 WeightDisc9 WeightDisc10</span></a>
+<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="co">#&gt; 1:           1           1           1            1</span></a>
+<a class="sourceLine" id="cb4-27" data-line-number="27">prediction<span class="op">$</span>distr<span class="op">$</span><span class="kw">mean</span>()[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt;    WeightDisc1 WeightDisc2 WeightDisc3 WeightDisc4 WeightDisc5 WeightDisc6</span></a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="co">#&gt; 1:    1.694734    1.259515    1.490812    1.630679    1.756059    1.724937</span></a>
+<a class="sourceLine" id="cb4-30" data-line-number="30"><span class="co">#&gt;    WeightDisc7 WeightDisc8 WeightDisc9 WeightDisc10</span></a>
+<a class="sourceLine" id="cb4-31" data-line-number="31"><span class="co">#&gt; 1:    1.680944    1.753342    1.662975     1.696142</span></a>
+<a class="sourceLine" id="cb4-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb4-33" data-line-number="33"><span class="co"># As well as plotted</span></a>
+<a class="sourceLine" id="cb4-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb4-35" data-line-number="35"><span class="kw">plot</span>(prediction<span class="op">$</span>distr[<span class="dv">1</span>], <span class="st">&quot;survival&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;First 2 Survival Curves&quot;</span>)</a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"><span class="kw">lines</span>(prediction<span class="op">$</span>distr[<span class="dv">2</span>], <span class="st">&quot;survival&quot;</span>, <span class="dt">col =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="composition" class="section level2">
+<h2>Composition</h2>
+<p>Finally we take a look at the <code>PipeOp</code>s implemented in <strong>mlr3proba</strong>, which are used for composition of predict types. For example, if a learner only returns a linear predictor, then <code>PipeOpDistrCompositor</code> can be used to estimate a survival distribution. Or, if a learner returns a <code>distr</code> then <code>PipeOpCrankCompositor</code> can be used to estimate <code>crank</code> from <code>distr</code>. See <strong><a href="https://github.com/mlr-org/mlr3pipelines">mlr3pipelines</a></strong> for full tutorials and details on <code>PipeOp</code>s.</p>
+<div id="pipeopdistrcompositor" class="section level3">
+<h3>PipeOpDistrCompositor</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">library</span>(mlr3pipelines)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co"># PipeOpDistrCompositor - Train one model with a baseline distribution,</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># (Kaplan-Meier or Nelson-Aalen), and another with a predicted linear predictor.</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">leaner_lp =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.glmnet&quot;</span>)</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">leaner_distr =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.kaplan&quot;</span>)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">prediction_lp =<span class="st"> </span>leaner_lp<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">prediction_distr =<span class="st"> </span>leaner_distr<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">prediction_lp<span class="op">$</span>distr</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; NULL</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co"># Doesn't need training. Base = baseline distribution. ph = Proportional hazards.</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15">pod =<span class="st"> </span><span class="kw">po</span>(<span class="st">&quot;distrcompose&quot;</span>, <span class="dt">param_vals =</span> <span class="kw">list</span>(<span class="dt">form =</span> <span class="st">&quot;ph&quot;</span>, <span class="dt">overwrite =</span> <span class="ot">FALSE</span>))</a>
+<a class="sourceLine" id="cb5-16" data-line-number="16">prediction =<span class="st"> </span>pod<span class="op">$</span><span class="kw">predict</span>(<span class="kw">list</span>(<span class="dt">base =</span> prediction_distr, <span class="dt">pred =</span> prediction_lp))<span class="op">$</span>output</a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co"># Now we have a predicted distr!</span></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20">prediction<span class="op">$</span>distr</a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; WeightDisc1 WeightDisc2 ... WeightDisc19 WeightDisc20</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co"># This can all be simplified by using the distrcompose wrapper</span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25">cvglm.distr =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="dt">learner =</span> <span class="kw">lrn</span>(<span class="st">&quot;surv.cvglmnet&quot;</span>),</a>
+<a class="sourceLine" id="cb5-26" data-line-number="26">                             <span class="dt">estimator =</span> <span class="st">&quot;kaplan&quot;</span>,</a>
+<a class="sourceLine" id="cb5-27" data-line-number="27">                             <span class="dt">form =</span> <span class="st">&quot;aft&quot;</span>,</a>
+<a class="sourceLine" id="cb5-28" data-line-number="28">                             <span class="dt">overwrite =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-29" data-line-number="29">cvglm.distr<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; &lt;PredictionSurv&gt; for 20 observations:</span></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="co">#&gt;     row_id     time status crank                distr lp</span></a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="co">#&gt;          1 5.000000  FALSE     0 &lt;VectorDistribution&gt;  0</span></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="co">#&gt;          2 3.315270   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
+<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="co">#&gt;          3 2.437066   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
+<a class="sourceLine" id="cb5-35" data-line-number="35"><span class="co">#&gt; ---                                                     </span></a>
+<a class="sourceLine" id="cb5-36" data-line-number="36"><span class="co">#&gt;         18 2.443796   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
+<a class="sourceLine" id="cb5-37" data-line-number="37"><span class="co">#&gt;         19 1.147798   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
+<a class="sourceLine" id="cb5-38" data-line-number="38"><span class="co">#&gt;         20 2.237981   TRUE     0 &lt;VectorDistribution&gt;  0</span></a></code></pre></div>
+</div>
+<div id="pipeopcrankcompositor" class="section level3">
+<h3>PipeOpCrankCompositor</h3>
+<p>Note that a <code>PredictionSurv</code> will always return <code>crank</code>, but this may either be the same as the <code>lp</code> or the expectation of <code>distr</code>. This compositor allows you to change the estimation method.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># PipeOpCrankCompositor - Only one model required.</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">leaner =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.coxph&quot;</span>)</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">prediction =<span class="st"> </span>leaner<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co"># Doesn't need training - Note: no `overwrite` option as `crank` is always</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co"># present so the compositor if used will always overwrite.</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">poc =<span class="st"> </span><span class="kw">po</span>(<span class="st">&quot;crankcompose&quot;</span>, <span class="dt">param_vals =</span> <span class="kw">list</span>(<span class="dt">method =</span> <span class="st">&quot;mean&quot;</span>))</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">composed_prediction =<span class="st"> </span>poc<span class="op">$</span><span class="kw">predict</span>(<span class="kw">list</span>(prediction))<span class="op">$</span>output</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co"># Note that whilst the actual values of `lp` and `crank` are different,</span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co"># the rankings are the same, so discrimination measures are unchanged.</span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">prediction<span class="op">$</span>crank[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt;  [1]  0.04693194 -0.63793218 -0.31431717 -0.08493555  0.22640509  0.74479092</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt;  [7]  0.01584090  0.65489498 -0.02211346  0.05022105</span></a>
+<a class="sourceLine" id="cb6-17" data-line-number="17">composed_prediction<span class="op">$</span>crank[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt;  [1] 1.694734 1.259515 1.490812 1.630679 1.756059 1.724937 1.680944 1.753342</span></a>
+<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt;  [9] 1.662975 1.696142</span></a>
+<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="kw">all</span>(<span class="kw">order</span>(prediction<span class="op">$</span>crank) <span class="op">==</span><span class="st"> </span><span class="kw">order</span>(composed_prediction<span class="op">$</span>crank))</a>
+<a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">#&gt; [1] FALSE</span></a>
+<a class="sourceLine" id="cb6-22" data-line-number="22"><span class="kw">cbind</span>(<span class="dt">Original =</span> prediction<span class="op">$</span><span class="kw">score</span>(), <span class="dt">Composed =</span> composed_prediction<span class="op">$</span><span class="kw">score</span>())</a>
+<a class="sourceLine" id="cb6-23" data-line-number="23"><span class="co">#&gt;               Original  Composed</span></a>
+<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">#&gt; surv.harrellC     0.55 0.5444444</span></a>
+<a class="sourceLine" id="cb6-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co"># Again a wrapper can be used to simplify this</span></a>
+<a class="sourceLine" id="cb6-27" data-line-number="27"><span class="kw">crankcompositor</span>(<span class="kw">lrn</span>(<span class="st">&quot;surv.coxph&quot;</span>), <span class="dt">method =</span> <span class="st">&quot;mean&quot;</span>)<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt; &lt;PredictionSurv&gt; for 20 observations:</span></a>
+<a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">#&gt;     row_id     time status    crank                distr          lp</span></a>
+<a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">#&gt;          1 5.000000  FALSE 1.694734 &lt;VectorDistribution&gt;  0.04693194</span></a>
+<a class="sourceLine" id="cb6-31" data-line-number="31"><span class="co">#&gt;          2 3.315270   TRUE 1.259515 &lt;VectorDistribution&gt; -0.63793218</span></a>
+<a class="sourceLine" id="cb6-32" data-line-number="32"><span class="co">#&gt;          3 2.437066   TRUE 1.490812 &lt;VectorDistribution&gt; -0.31431717</span></a>
+<a class="sourceLine" id="cb6-33" data-line-number="33"><span class="co">#&gt; ---                                                                 </span></a>
+<a class="sourceLine" id="cb6-34" data-line-number="34"><span class="co">#&gt;         18 2.443796   TRUE 1.551264 &lt;VectorDistribution&gt; -0.22103464</span></a>
+<a class="sourceLine" id="cb6-35" data-line-number="35"><span class="co">#&gt;         19 1.147798   TRUE 1.621698 &lt;VectorDistribution&gt; -0.10144647</span></a>
+<a class="sourceLine" id="cb6-36" data-line-number="36"><span class="co">#&gt;         20 2.237981   TRUE 1.777548 &lt;VectorDistribution&gt;  0.52638534</span></a></code></pre></div>
+</div>
+</div>
+<div id="all-together-now" class="section level2">
+<h2>All Together Now</h2>
+<p>Putting all of this together we can perform a (overly simplified) benchmark experiment to find the best learner for making predictions on a simulated dataset.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(mlr3pipelines); <span class="kw">library</span>(mlr3); <span class="kw">library</span>(mlr3tuning); <span class="kw">library</span>(paradox)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">task =<span class="st"> </span><span class="kw">tgen</span>(<span class="st">&quot;simsurv&quot;</span>)<span class="op">$</span><span class="kw">generate</span>(<span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">composed_lrn_glm =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="kw">lrn</span>(<span class="st">&quot;surv.glmnet&quot;</span>), <span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;ph&quot;</span>)</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">lrns =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">paste0</span>(<span class="st">&quot;surv.&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;coxph&quot;</span>, <span class="st">&quot;parametric&quot;</span>)), lrn)</a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">lrns[[<span class="dv">3</span>]]<span class="op">$</span>param_set<span class="op">$</span>values =<span class="st"> </span><span class="kw">list</span>(<span class="dt">dist =</span> <span class="st">&quot;weibull&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;ph&quot;</span>)</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">design =<span class="st"> </span><span class="kw">benchmark_grid</span>(<span class="dt">tasks =</span> task, <span class="dt">learners =</span> <span class="kw">c</span>(lrns, <span class="kw">list</span>(composed_lrn_glm)),</a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">                        <span class="dt">resamplings =</span> <span class="kw">rsmp</span>(<span class="st">&quot;cv&quot;</span>, <span class="dt">folds =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14">bm =<span class="st"> </span><span class="kw">benchmark</span>(design)</a>
+<a class="sourceLine" id="cb7-15" data-line-number="15">bm<span class="op">$</span><span class="kw">aggregate</span>(<span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.harrellC&quot;</span>,<span class="st">&quot;surv.graf&quot;</span>,<span class="st">&quot;surv.grafSE&quot;</span>), msr))[,<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)]</a>
+<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt;                              learner_id surv.harrellC surv.graf surv.grafSE</span></a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; 1:                          surv.kaplan     0.5000000 0.2161458  0.04361242</span></a>
+<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; 2:                           surv.coxph     0.6690476 0.2322002  0.07425489</span></a>
+<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; 3:                      surv.parametric     0.3190476 0.5541667  0.10178407</span></a>
+<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; 4: surv.kaplan.surv.glmnet.distrcompose     0.7095238 0.3833393  0.12062721</span></a></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
