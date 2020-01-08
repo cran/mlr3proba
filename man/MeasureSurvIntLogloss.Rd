@@ -26,7 +26,7 @@ If \code{integrated == TRUE} then an approximation to integration is made by tak
 \deqn{L(S) = \frac{1}{NT} \sum_{i=1}^N \sum_{j=1}^T L(S_i,t_i|t^*_j)}{L(S) = 1/(NT) \sum_i^N \sum_j^T L(S_i,t_i|t*_j)}
 }
 \section{Construction}{
-\preformatted{MeasureSurvIntLogloss$new(integrated = TRUE, times, eps = 1e-15)
+\preformatted{MeasureSurvIntLogloss$new(integrated = TRUE, times, eps = 1e-15, method = 2)
 mlr_measures$get("surv.intlogloss")
 msr("surv.intlogloss")
 }
@@ -60,10 +60,7 @@ Very small number to set zero-valued predicted probabilities to, in order to pre
 }
 
 \references{
-Graf, E., Schmoor, C., Sauerbrei, W. and Schumacher, M. (1999).\cr
-Assessment and comparison of prognostic classification schemes for survival data.\cr
-Statistics in Medicine, 18(17), 2529-2545.\cr
-\doi{10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}
+\cite{mlr3proba}{graf_1999}
 }
 \seealso{
 Other survival measures: 

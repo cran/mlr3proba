@@ -10,8 +10,7 @@
 #' see examples.
 #'
 #' @references
-#' Goeman, J. J., L1 penalized estimation in the Cox proportional hazards model.
-#' Biometrical Journal 52(1), 70{84}.
+#' \cite{mlr3proba}{goeman_2009}
 #'
 #' @export
 #' @template seealso_learner
@@ -73,8 +72,8 @@ LearnerSurvPenalized = R6Class("LearnerSurvPenalized", inherit = LearnerSurv,
         pars$unpenalized = formulate(rhs = pars$unpenalized)
       }
 
-      suppressAll(invoke(penalized::penalized, response = task$truth(), penalized = penalized,
-             data = task$data(cols = task$feature_names), model = "cox", .args = pars))
+      suppressWarnings(suppressMessages((invoke(penalized::penalized, response = task$truth(), penalized = penalized,
+             data = task$data(cols = task$feature_names), model = "cox", .args = pars))))
       },
 
     predict_internal = function(task) {

@@ -17,6 +17,11 @@ Graf Score at time \eqn{t^*}{t*} is given by
 \deqn{L(S,t|t^*) = [(S(t^*)^2)I(t \le t^*, \delta = 1)(1/G(t))] + [((1 - S(t^*))^2)I(t > t^*)(1/G(t^*))]}{L(S,t|t*) = [(S(t*)^2)I(t \le t*, \delta = 1)(1/G(t))] + [((1 - S(t*))^2)I(t > t*)(1/G(t*))]}
 where \eqn{G} is the Kaplan-Meier estimate of the censoring distribution.
 
+Note: If comparing the integrated graf score to other packages, e.g. \code{\link[pec:pec]{pec::pec()}}, then
+\code{method = 2} should be used, however the results may still be very slightly different as
+this package uses \code{survfit} to estimate the censoring distribution, in line with the Graf 1999 paper.
+Whereas some other packages use \code{prodlim} with \code{reverse = TRUE} (meaning Kaplan-Meier is not used).
+
 If \code{integrated == FALSE} then the sample mean is taken for the single specified \code{times}, \eqn{t^*}{t*}, and the returned
 score is given by
 \deqn{L(S,t|t^*) = \frac{1}{N} \sum_{i=1}^N L(S_i,t_i|t^*)}{L(S,t|t*) = 1/N \sum_i^N L(S_i,t_i|t*)}
@@ -28,7 +33,7 @@ If \code{integrated == TRUE} then an approximation to integration is made by tak
 \deqn{L(S) = \frac{1}{NT} \sum_{i=1}^N \sum_{j=1}^T L(S_i,t_i|t^*_j)}{L(S) = 1/(NT) \sum_i^N \sum_j^T L(S_i,t_i|t*_j)}
 }
 \section{Construction}{
-\preformatted{MeasureSurvGraf$new(integrated = TRUE, times)
+\preformatted{MeasureSurvGraf$new(integrated = TRUE, times, method = 2)
 mlr_measures$get("surv.graf")
 msr("surv.graf")
 }
@@ -54,10 +59,7 @@ See \link{MeasureSurv}, as well as all variables passed to the constructor.
 }
 
 \references{
-Graf, E., Schmoor, C., Sauerbrei, W. and Schumacher, M. (1999).\cr
-Assessment and comparison of prognostic classification schemes for survival data.\cr
-Statistics in Medicine, 18(17), 2529-2545.\cr
-\doi{10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}
+\cite{mlr3proba}{graf_1999}
 }
 \seealso{
 Other survival measures: 

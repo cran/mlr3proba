@@ -434,7 +434,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb3-18" data-line-number="18">measure =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.graf&quot;</span>, <span class="st">&quot;surv.grafSE&quot;</span>), msr)</a>
 <a class="sourceLine" id="cb3-19" data-line-number="19">prediction<span class="op">$</span><span class="kw">score</span>(measure)</a>
 <a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;   surv.graf surv.grafSE </span></a>
-<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;   0.1249958   0.0129813</span></a>
+<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;   0.1120402   0.0129813</span></a>
 <a class="sourceLine" id="cb3-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co"># Often measures can be integrated over mutliple time-points, or return</span></a>
 <a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co"># predictions for single time-points</span></a>
@@ -494,8 +494,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb5-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co"># PipeOpDistrCompositor - Train one model with a baseline distribution,</span></a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># (Kaplan-Meier or Nelson-Aalen), and another with a predicted linear predictor.</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">leaner_lp =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.glmnet&quot;</span>)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">task =<span class="st"> </span><span class="kw">tgen</span>(<span class="st">&quot;simsurv&quot;</span>)<span class="op">$</span><span class="kw">generate</span>(<span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">leaner_lp =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.gbm&quot;</span>, <span class="dt">bag.fraction =</span> <span class="dv">1</span>, <span class="dt">n.trees =</span> 50L)</a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">leaner_distr =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;surv.kaplan&quot;</span>)</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8">prediction_lp =<span class="st"> </span>leaner_lp<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
 <a class="sourceLine" id="cb5-9" data-line-number="9">prediction_distr =<span class="st"> </span>leaner_distr<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
@@ -510,24 +510,24 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co"># Now we have a predicted distr!</span></a>
 <a class="sourceLine" id="cb5-19" data-line-number="19"></a>
 <a class="sourceLine" id="cb5-20" data-line-number="20">prediction<span class="op">$</span>distr</a>
-<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; WeightDisc1 WeightDisc2 ... WeightDisc19 WeightDisc20</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; WeightDisc1 WeightDisc2 ... WeightDisc29 WeightDisc30</span></a>
 <a class="sourceLine" id="cb5-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co"># This can all be simplified by using the distrcompose wrapper</span></a>
 <a class="sourceLine" id="cb5-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb5-25" data-line-number="25">cvglm.distr =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="dt">learner =</span> <span class="kw">lrn</span>(<span class="st">&quot;surv.cvglmnet&quot;</span>),</a>
+<a class="sourceLine" id="cb5-25" data-line-number="25">gbm.distr =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="dt">learner =</span> <span class="kw">lrn</span>(<span class="st">&quot;surv.gbm&quot;</span>, <span class="dt">bag.fraction =</span> <span class="dv">1</span>, <span class="dt">n.trees =</span> 50L),</a>
 <a class="sourceLine" id="cb5-26" data-line-number="26">                             <span class="dt">estimator =</span> <span class="st">&quot;kaplan&quot;</span>,</a>
 <a class="sourceLine" id="cb5-27" data-line-number="27">                             <span class="dt">form =</span> <span class="st">&quot;aft&quot;</span>,</a>
 <a class="sourceLine" id="cb5-28" data-line-number="28">                             <span class="dt">overwrite =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb5-29" data-line-number="29">cvglm.distr<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
-<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; &lt;PredictionSurv&gt; for 20 observations:</span></a>
-<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="co">#&gt;     row_id     time status crank                distr lp</span></a>
-<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="co">#&gt;          1 5.000000  FALSE     0 &lt;VectorDistribution&gt;  0</span></a>
-<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="co">#&gt;          2 3.315270   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
-<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="co">#&gt;          3 2.437066   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
-<a class="sourceLine" id="cb5-35" data-line-number="35"><span class="co">#&gt; ---                                                     </span></a>
-<a class="sourceLine" id="cb5-36" data-line-number="36"><span class="co">#&gt;         18 2.443796   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
-<a class="sourceLine" id="cb5-37" data-line-number="37"><span class="co">#&gt;         19 1.147798   TRUE     0 &lt;VectorDistribution&gt;  0</span></a>
-<a class="sourceLine" id="cb5-38" data-line-number="38"><span class="co">#&gt;         20 2.237981   TRUE     0 &lt;VectorDistribution&gt;  0</span></a></code></pre></div>
+<a class="sourceLine" id="cb5-29" data-line-number="29">gbm.distr<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; &lt;PredictionSurv&gt; for 30 observations:</span></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="co">#&gt;     row_id     time status       crank                distr          lp</span></a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="co">#&gt;          1 5.000000  FALSE -0.19367047 &lt;VectorDistribution&gt; -0.19367047</span></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="co">#&gt;          2 3.568860   TRUE -0.66748168 &lt;VectorDistribution&gt; -0.66748168</span></a>
+<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="co">#&gt;          3 1.128017   TRUE -0.05205574 &lt;VectorDistribution&gt; -0.05205574</span></a>
+<a class="sourceLine" id="cb5-35" data-line-number="35"><span class="co">#&gt; ---                                                                    </span></a>
+<a class="sourceLine" id="cb5-36" data-line-number="36"><span class="co">#&gt;         28 1.635774   TRUE -0.17106619 &lt;VectorDistribution&gt; -0.17106619</span></a>
+<a class="sourceLine" id="cb5-37" data-line-number="37"><span class="co">#&gt;         29 5.000000  FALSE -0.47381121 &lt;VectorDistribution&gt; -0.47381121</span></a>
+<a class="sourceLine" id="cb5-38" data-line-number="38"><span class="co">#&gt;         30 3.155294   TRUE -0.66748168 &lt;VectorDistribution&gt; -0.66748168</span></a></code></pre></div>
 </div>
 <div id="pipeopcrankcompositor" class="section level3">
 <h3>PipeOpCrankCompositor</h3>
@@ -546,28 +546,28 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co"># the rankings are the same, so discrimination measures are unchanged.</span></a>
 <a class="sourceLine" id="cb6-13" data-line-number="13"></a>
 <a class="sourceLine" id="cb6-14" data-line-number="14">prediction<span class="op">$</span>crank[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
-<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt;  [1]  0.04693194 -0.63793218 -0.31431717 -0.08493555  0.22640509  0.74479092</span></a>
-<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt;  [7]  0.01584090  0.65489498 -0.02211346  0.05022105</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt;  [1]  0.19248733 -0.43871848  0.39422978  0.24340349 -0.20020759  0.15094767</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt;  [7]  0.60484819 -0.56638731  0.01629422  0.42356422</span></a>
 <a class="sourceLine" id="cb6-17" data-line-number="17">composed_prediction<span class="op">$</span>crank[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
-<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt;  [1] 1.694734 1.259515 1.490812 1.630679 1.756059 1.724937 1.680944 1.753342</span></a>
-<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt;  [9] 1.662975 1.696142</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt;  [1] 1.6122990 1.0944552 1.7651577 1.6525095 1.2873051 1.5788921 1.8987710</span></a>
+<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt;  [8] 0.9969524 1.4680414 1.7856538</span></a>
 <a class="sourceLine" id="cb6-20" data-line-number="20"><span class="kw">all</span>(<span class="kw">order</span>(prediction<span class="op">$</span>crank) <span class="op">==</span><span class="st"> </span><span class="kw">order</span>(composed_prediction<span class="op">$</span>crank))</a>
-<a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">#&gt; [1] FALSE</span></a>
+<a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">#&gt; [1] TRUE</span></a>
 <a class="sourceLine" id="cb6-22" data-line-number="22"><span class="kw">cbind</span>(<span class="dt">Original =</span> prediction<span class="op">$</span><span class="kw">score</span>(), <span class="dt">Composed =</span> composed_prediction<span class="op">$</span><span class="kw">score</span>())</a>
-<a class="sourceLine" id="cb6-23" data-line-number="23"><span class="co">#&gt;               Original  Composed</span></a>
-<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">#&gt; surv.harrellC     0.55 0.5444444</span></a>
+<a class="sourceLine" id="cb6-23" data-line-number="23"><span class="co">#&gt;                Original  Composed</span></a>
+<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">#&gt; surv.harrellC 0.5854342 0.5854342</span></a>
 <a class="sourceLine" id="cb6-25" data-line-number="25"></a>
 <a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co"># Again a wrapper can be used to simplify this</span></a>
 <a class="sourceLine" id="cb6-27" data-line-number="27"><span class="kw">crankcompositor</span>(<span class="kw">lrn</span>(<span class="st">&quot;surv.coxph&quot;</span>), <span class="dt">method =</span> <span class="st">&quot;mean&quot;</span>)<span class="op">$</span><span class="kw">train</span>(task)<span class="op">$</span><span class="kw">predict</span>(task)</a>
-<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt; &lt;PredictionSurv&gt; for 20 observations:</span></a>
+<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt; &lt;PredictionSurv&gt; for 30 observations:</span></a>
 <a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">#&gt;     row_id     time status    crank                distr          lp</span></a>
-<a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">#&gt;          1 5.000000  FALSE 1.694734 &lt;VectorDistribution&gt;  0.04693194</span></a>
-<a class="sourceLine" id="cb6-31" data-line-number="31"><span class="co">#&gt;          2 3.315270   TRUE 1.259515 &lt;VectorDistribution&gt; -0.63793218</span></a>
-<a class="sourceLine" id="cb6-32" data-line-number="32"><span class="co">#&gt;          3 2.437066   TRUE 1.490812 &lt;VectorDistribution&gt; -0.31431717</span></a>
+<a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">#&gt;          1 5.000000  FALSE 1.612299 &lt;VectorDistribution&gt;  0.19248733</span></a>
+<a class="sourceLine" id="cb6-31" data-line-number="31"><span class="co">#&gt;          2 3.568860   TRUE 1.094455 &lt;VectorDistribution&gt; -0.43871848</span></a>
+<a class="sourceLine" id="cb6-32" data-line-number="32"><span class="co">#&gt;          3 1.128017   TRUE 1.765158 &lt;VectorDistribution&gt;  0.39422978</span></a>
 <a class="sourceLine" id="cb6-33" data-line-number="33"><span class="co">#&gt; ---                                                                 </span></a>
-<a class="sourceLine" id="cb6-34" data-line-number="34"><span class="co">#&gt;         18 2.443796   TRUE 1.551264 &lt;VectorDistribution&gt; -0.22103464</span></a>
-<a class="sourceLine" id="cb6-35" data-line-number="35"><span class="co">#&gt;         19 1.147798   TRUE 1.621698 &lt;VectorDistribution&gt; -0.10144647</span></a>
-<a class="sourceLine" id="cb6-36" data-line-number="36"><span class="co">#&gt;         20 2.237981   TRUE 1.777548 &lt;VectorDistribution&gt;  0.52638534</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-34" data-line-number="34"><span class="co">#&gt;         28 1.635774   TRUE 1.232586 &lt;VectorDistribution&gt; -0.26655353</span></a>
+<a class="sourceLine" id="cb6-35" data-line-number="35"><span class="co">#&gt;         29 5.000000  FALSE 1.436710 &lt;VectorDistribution&gt; -0.02125514</span></a>
+<a class="sourceLine" id="cb6-36" data-line-number="36"><span class="co">#&gt;         30 3.155294   TRUE 1.073284 &lt;VectorDistribution&gt; -0.46592203</span></a></code></pre></div>
 </div>
 </div>
 <div id="all-together-now" class="section level2">
@@ -576,23 +576,24 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(mlr3pipelines); <span class="kw">library</span>(mlr3); <span class="kw">library</span>(mlr3tuning); <span class="kw">library</span>(paradox)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">task =<span class="st"> </span><span class="kw">tgen</span>(<span class="st">&quot;simsurv&quot;</span>)<span class="op">$</span><span class="kw">generate</span>(<span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">task =<span class="st"> </span><span class="kw">tgen</span>(<span class="st">&quot;simsurv&quot;</span>)<span class="op">$</span><span class="kw">generate</span>(<span class="dv">50</span>)</a>
 <a class="sourceLine" id="cb7-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">composed_lrn_glm =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="kw">lrn</span>(<span class="st">&quot;surv.glmnet&quot;</span>), <span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;ph&quot;</span>)</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">lrns =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">paste0</span>(<span class="st">&quot;surv.&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;coxph&quot;</span>, <span class="st">&quot;parametric&quot;</span>)), lrn)</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">lrns[[<span class="dv">3</span>]]<span class="op">$</span>param_set<span class="op">$</span>values =<span class="st"> </span><span class="kw">list</span>(<span class="dt">dist =</span> <span class="st">&quot;weibull&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;ph&quot;</span>)</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">design =<span class="st"> </span><span class="kw">benchmark_grid</span>(<span class="dt">tasks =</span> task, <span class="dt">learners =</span> <span class="kw">c</span>(lrns, <span class="kw">list</span>(composed_lrn_glm)),</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">                        <span class="dt">resamplings =</span> <span class="kw">rsmp</span>(<span class="st">&quot;cv&quot;</span>, <span class="dt">folds =</span> <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">bm =<span class="st"> </span><span class="kw">benchmark</span>(design)</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">bm<span class="op">$</span><span class="kw">aggregate</span>(<span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.harrellC&quot;</span>,<span class="st">&quot;surv.graf&quot;</span>,<span class="st">&quot;surv.grafSE&quot;</span>), msr))[,<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)]</a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt;                              learner_id surv.harrellC surv.graf surv.grafSE</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; 1:                          surv.kaplan     0.5000000 0.2161458  0.04361242</span></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; 2:                           surv.coxph     0.6690476 0.2322002  0.07425489</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; 3:                      surv.parametric     0.3190476 0.5541667  0.10178407</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; 4: surv.kaplan.surv.glmnet.distrcompose     0.7095238 0.3833393  0.12062721</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-6" data-line-number="6">composed_lrn_gbm =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="kw">lrn</span>(<span class="st">&quot;surv.gbm&quot;</span>, <span class="dt">bag.fraction =</span> <span class="dv">1</span>, <span class="dt">n.trees =</span> 50L),</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">                                   <span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;ph&quot;</span>)</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">lrns =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">paste0</span>(<span class="st">&quot;surv.&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;coxph&quot;</span>, <span class="st">&quot;parametric&quot;</span>)), lrn)</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">lrns[[<span class="dv">3</span>]]<span class="op">$</span>param_set<span class="op">$</span>values =<span class="st"> </span><span class="kw">list</span>(<span class="dt">dist =</span> <span class="st">&quot;weibull&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;ph&quot;</span>)</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">design =<span class="st"> </span><span class="kw">benchmark_grid</span>(<span class="dt">tasks =</span> task, <span class="dt">learners =</span> <span class="kw">c</span>(lrns, <span class="kw">list</span>(composed_lrn_gbm)),</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13">                        <span class="dt">resamplings =</span> <span class="kw">rsmp</span>(<span class="st">&quot;cv&quot;</span>, <span class="dt">folds =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb7-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb7-15" data-line-number="15">bm =<span class="st"> </span><span class="kw">benchmark</span>(design)</a>
+<a class="sourceLine" id="cb7-16" data-line-number="16">bm<span class="op">$</span><span class="kw">aggregate</span>(<span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.harrellC&quot;</span>,<span class="st">&quot;surv.graf&quot;</span>,<span class="st">&quot;surv.grafSE&quot;</span>), msr))[,<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)]</a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt;                           learner_id surv.harrellC surv.graf surv.grafSE</span></a>
+<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; 1:                       surv.kaplan     0.5000000 0.2107141  0.02003976</span></a>
+<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; 2:                        surv.coxph     0.5003190 0.2259178  0.03210873</span></a>
+<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; 3:                   surv.parametric     0.5066986 0.4481043  0.06730402</span></a>
+<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt; 4: surv.kaplan.surv.gbm.distrcompose     0.4811204 0.2774313  0.04296744</span></a></code></pre></div>
 </div>
 
 

@@ -2,9 +2,10 @@
 #' @templateVar title Integrated Graf Score
 #' @templateVar inherit `MeasureSurvIntegrated`/[MeasureSurv]
 #' @templateVar fullname MeasureSurvGraf
-#' @templateVar pars integrated = TRUE, times
+#' @templateVar pars integrated = TRUE, times, method = 2
 #' @templateVar int_par TRUE
 #' @templateVar times_par TRUE
+#' @templateVar meth_par TRUE
 #'
 #' @aliases MeasureSurvBrier mlr_measures_surv.brier
 #'
@@ -16,23 +17,26 @@
 #' \deqn{L(S,t|t^*) = [(S(t^*)^2)I(t \le t^*, \delta = 1)(1/G(t))] + [((1 - S(t^*))^2)I(t > t^*)(1/G(t^*))]}{L(S,t|t*) = [(S(t*)^2)I(t \le t*, \delta = 1)(1/G(t))] + [((1 - S(t*))^2)I(t > t*)(1/G(t*))]}
 #' where \eqn{G} is the Kaplan-Meier estimate of the censoring distribution.
 #'
+#' Note: If comparing the integrated graf score to other packages, e.g. [pec::pec()], then
+#' `method = 2` should be used, however the results may still be very slightly different as
+#' this package uses `survfit` to estimate the censoring distribution, in line with the Graf 1999 paper.
+#' Whereas some other packages use `prodlim` with `reverse = TRUE` (meaning Kaplan-Meier is not used).
+#'
 #' @template measure_integrated
 #'
 #' @references
-#' Graf, E., Schmoor, C., Sauerbrei, W. and Schumacher, M. (1999).\cr
-#' Assessment and comparison of prognostic classification schemes for survival data.\cr
-#' Statistics in Medicine, 18(17), 2529-2545.\cr
-#' \doi{10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}
+#' \cite{mlr3proba}{graf_1999}
 #'
 #' @family Probabilistic survival measures
 #' @export
 MeasureSurvGraf = R6::R6Class("MeasureSurvGraf",
   inherit = MeasureSurvIntegrated,
   public = list(
-    initialize = function(integrated = TRUE, times) {
+    initialize = function(integrated = TRUE, times, method = 2) {
       super$initialize(
         integrated = integrated,
         times = times,
+        method = method,
         id = "surv.graf",
         range = c(0, Inf),
         minimize = TRUE,
@@ -46,7 +50,8 @@ MeasureSurvGraf = R6::R6Class("MeasureSurvGraf",
       integrated_score(score = weighted_graf(truth = prediction$truth,
                                              distribution = prediction$distr,
                                              times = self$times),
-                       integrated = self$integrated)
+                       integrated = self$integrated,
+                       method = self$method)
     }
   )
 )

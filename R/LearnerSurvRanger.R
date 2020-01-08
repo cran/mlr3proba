@@ -5,15 +5,9 @@
 #' @templateVar distr using [ranger::predict.ranger()]
 #'
 #' @references
-#' Marvin N. Wright and Andreas Ziegler (2017).
-#' ranger: A Fast Implementation of Random Forests for High Dimensional Data in C++ and R.
-#' Journal of Statistical Software, 77(1), 1-17.
-#' \doi{10.18637/jss.v077.i01}.
+#' \cite{mlr3proba}{wright_2017}
 #'
-#' Breiman, L. (2001).
-#' Random Forests.
-#' Machine Learning 45(1).
-#' \doi{10.1023/A:1010933404324}.
+#' \cite{mlr3proba}{breiman_2001}
 #'
 #' @export
 LearnerSurvRanger = R6Class("LearnerSurvRanger", inherit = LearnerSurv,
@@ -31,7 +25,7 @@ LearnerSurvRanger = R6Class("LearnerSurvRanger", inherit = LearnerSurv,
             ParamLgl$new(id = "replace", default = TRUE, tags = "train"),
             ParamDbl$new(id = "sample.fraction", lower = 0L, upper = 1L, tags = "train"), # for replace == FALSE, def = 0.632
             # ParamDbl$new(id = "class.weights", defaul = NULL, tags = "train"), #
-            ParamFct$new(id = "splitrule", levels = c("variance", "extratrees", "maxstat"), default = "variance", tags = "train"),
+            ParamFct$new(id = "splitrule", levels = c("logrank","extratrees","C","maxstat"), default = "logrank", tags = "train"),
             ParamInt$new(id = "num.random.splits", lower = 1L, default = 1L, tags = "train"), # requires = quote(splitrule == "extratrees")
             ParamDbl$new(id = "split.select.weights", lower = 0, upper = 1, tags = "train"),
             ParamUty$new(id = "always.split.variables", tags = "train"),

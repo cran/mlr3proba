@@ -18,13 +18,9 @@ of problems in implementation that sometimes cause fatal errors in R. In future 
 measures will all be re-written and implemented directly in \code{mlr3proba}.
 }
 \section{Construction}{
-\preformatted{MeasureSurvUnoC$new(times, lp_thresh)
+\preformatted{MeasureSurvUnoC$new()
 mlr_measures$get("surv.unoC")
 msr("surv.unoC")
-}
-\itemize{
-\item \code{times} :: \code{vector()} \cr If \code{integrate == TRUE} then a vector of time-points over which to integrate the score. If \code{integrate == FALSE} then a single time point at which to return the score. \cr
-\item \code{lp_thresh} :: \code{numeric(1)} \cr Determines where to threshold the linear predictor for calculating the TPR/TNR. \cr
 }
 }
 
@@ -44,11 +40,7 @@ See \link{MeasureSurv}, as well as all variables passed to the constructor.
 }
 
 \references{
-Uno, H., T. Cai T, M. J. Pencina, R. B. D'Agostino and W. L. Wei. (2011). \cr
-On the C-statistics for evaluating overall adequacy of risk prediction procedures with censored
-survival data.\cr
-Statistics in Medicine. 30(10): 1105–1117.\cr
-\doi{10.1002/sim.4154}
+\cite{mlr3proba}{uno_2011}
 }
 \seealso{
 Other survival measures: 

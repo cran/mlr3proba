@@ -8,22 +8,21 @@
 #' Parameter `xval` is set to 0 in order to save some computation time.
 #'
 #' @references
-#' Breiman, L. (1984).
-#' Classification and Regression Trees.
-#' New York: Routledge.
-#' \doi{10.1201/9781315139470}.
+#' \cite{mlr3proba}{breiman_1984}
 #'
 #' @export
 LearnerSurvRpart = R6Class("LearnerSurvRpart", inherit = LearnerSurv,
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
+        ParamDbl$new("parms", default = 1, tags = "train"),
         ParamInt$new("minsplit", default = 20L, lower = 1L, tags = "train"),
         ParamDbl$new("cp", default = 0.01, lower = 0, upper = 1, tags = "train"),
         ParamInt$new("maxcompete", default = 4L, lower = 0L, tags = "train"),
         ParamInt$new("maxsurrogate", default = 5L, lower = 0L, tags = "train"),
         ParamInt$new("maxdepth", default = 30L, lower = 1L, upper = 30L, tags = "train"),
-        ParamInt$new("xval", default = 10L, lower = 0L, tags = "train")
+        ParamInt$new("xval", default = 10L, lower = 0L, tags = "train"),
+        ParamUty$new("cost", tags = "train")
       ))
       ps$values = list(xval = 0L)
 

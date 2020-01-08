@@ -5,7 +5,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 set.seed(1)
-lgr::get_logger("mlr3")$set_threshold("fatal")
+lgr::get_logger("mlr3")$set_threshold("error")
 
 ## -----------------------------------------------------------------------------
 library(mlr3proba); library(mlr3); library(survival)
@@ -97,8 +97,8 @@ library(mlr3pipelines)
 
 # PipeOpDistrCompositor - Train one model with a baseline distribution,
 # (Kaplan-Meier or Nelson-Aalen), and another with a predicted linear predictor.
-
-leaner_lp = lrn("surv.glmnet")
+task = tgen("simsurv")$generate(30)
+leaner_lp = lrn("surv.gbm", bag.fraction = 1, n.trees = 50L)
 leaner_distr = lrn("surv.kaplan")
 prediction_lp = leaner_lp$train(task)$predict(task)
 prediction_distr = leaner_distr$train(task)$predict(task)
@@ -115,11 +115,11 @@ prediction$distr
 
 # This can all be simplified by using the distrcompose wrapper
 
-cvglm.distr = distrcompositor(learner = lrn("surv.cvglmnet"),
+gbm.distr = distrcompositor(learner = lrn("surv.gbm", bag.fraction = 1, n.trees = 50L),
                              estimator = "kaplan",
                              form = "aft",
                              overwrite = FALSE)
-cvglm.distr$train(task)$predict(task)
+gbm.distr$train(task)$predict(task)
 
 ## -----------------------------------------------------------------------------
 # PipeOpCrankCompositor - Only one model required.
@@ -147,14 +147,15 @@ crankcompositor(lrn("surv.coxph"), method = "mean")$train(task)$predict(task)
 library(mlr3pipelines); library(mlr3); library(mlr3tuning); library(paradox)
 set.seed(42)
 
-task = tgen("simsurv")$generate(20)
+task = tgen("simsurv")$generate(50)
 
-composed_lrn_glm = distrcompositor(lrn("surv.glmnet"), "kaplan", "ph")
+composed_lrn_gbm = distrcompositor(lrn("surv.gbm", bag.fraction = 1, n.trees = 50L),
+                                   "kaplan", "ph")
 
 lrns = lapply(paste0("surv.", c("kaplan", "coxph", "parametric")), lrn)
 lrns[[3]]$param_set$values = list(dist = "weibull", type = "ph")
 
-design = benchmark_grid(tasks = task, learners = c(lrns, list(composed_lrn_glm)),
+design = benchmark_grid(tasks = task, learners = c(lrns, list(composed_lrn_gbm)),
                         resamplings = rsmp("cv", folds = 2))
 
 bm = benchmark(design)

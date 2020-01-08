@@ -2,10 +2,11 @@
 #' @templateVar title Integrated Log loss
 #' @templateVar inherit `MeasureSurvIntegrated`/[MeasureSurv]
 #' @templateVar fullname MeasureSurvIntLogloss
-#' @templateVar pars integrated = TRUE, times, eps = 1e-15
+#' @templateVar pars integrated = TRUE, times, eps = 1e-15, method = 2
 #' @templateVar int_par TRUE
 #' @templateVar times_par TRUE
 #' @templateVar eps_par TRUE
+#' @templateVar meth_par TRUE
 #'
 #' @description
 #' Calculates the integrated logarithmic (log), loss, aka integrated cross entropy.
@@ -23,20 +24,18 @@
 #' Very small number to set zero-valued predicted probabilities to, in order to prevent errors in log(0) calculation.
 #'
 #' @references
-#' Graf, E., Schmoor, C., Sauerbrei, W. and Schumacher, M. (1999).\cr
-#' Assessment and comparison of prognostic classification schemes for survival data.\cr
-#' Statistics in Medicine, 18(17), 2529-2545.\cr
-#' \doi{10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}
+#' \cite{mlr3proba}{graf_1999}
 #'
 #' @family Probabilistic survival measures
 #' @export
 MeasureSurvIntLogloss = R6::R6Class("MeasureSurvIntLogloss",
   inherit = MeasureSurvIntegrated,
   public = list(
-    initialize = function(integrated = TRUE, times, eps = 1e-15) {
+    initialize = function(integrated = TRUE, times, eps = 1e-15, method = 2) {
       super$initialize(
         integrated = integrated,
         times = times,
+        method = method,
         id = "surv.intlogloss",
         range = c(0, Inf),
         minimize = TRUE,
@@ -54,7 +53,8 @@ MeasureSurvIntLogloss = R6::R6Class("MeasureSurvIntLogloss",
                                              distribution = prediction$distr,
                                              times = self$times,
                                              eps = self$eps),
-                    integrated = self$integrated)
+                    integrated = self$integrated,
+                    method = self$method)
     }
   ),
 
