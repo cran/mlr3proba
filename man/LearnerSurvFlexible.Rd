@@ -43,7 +43,7 @@ lrn("surv.flexible")
 \item Type: "surv"
 \item Predict Types: \verb{distr, lp, crank}
 \item Feature Types: \verb{logical, integer, factor, numeric}
-\item Packages: \CRANpkg{flexsurv} \CRANpkg{survival} \CRANpkg{distr6}
+\item Packages: \CRANpkg{flexsurv} \CRANpkg{survival} \CRANpkg{distr6} \CRANpkg{set6}
 }
 }
 
@@ -64,6 +64,7 @@ Other survival learners:
 \code{\link{LearnerSurvKaplan}},
 \code{\link{LearnerSurvMboost}},
 \code{\link{LearnerSurvNelson}},
+\code{\link{LearnerSurvObliqueRSF}},
 \code{\link{LearnerSurvParametric}},
 \code{\link{LearnerSurvPenalized}},
 \code{\link{LearnerSurvRandomForestSRC}},

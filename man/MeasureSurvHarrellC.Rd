@@ -47,8 +47,14 @@ Other survival measures:
 \code{\link{MeasureSurvIntLogloss}},
 \code{\link{MeasureSurvLoglossSE}},
 \code{\link{MeasureSurvLogloss}},
+\code{\link{MeasureSurvMAESE}},
+\code{\link{MeasureSurvMAE}},
+\code{\link{MeasureSurvMSESE}},
+\code{\link{MeasureSurvMSE}},
 \code{\link{MeasureSurvNagelkR2}},
 \code{\link{MeasureSurvOQuigleyR2}},
+\code{\link{MeasureSurvRMSESE}},
+\code{\link{MeasureSurvRMSE}},
 \code{\link{MeasureSurvSongAUC}},
 \code{\link{MeasureSurvSongTNR}},
 \code{\link{MeasureSurvSongTPR}},
@@ -62,6 +68,10 @@ Other Concordance survival measures:
 \code{\link{MeasureSurvBeggC}},
 \code{\link{MeasureSurvGonenC}},
 \code{\link{MeasureSurvUnoC}}
+
+Other crank survival measures: 
+\code{\link{MeasureSurvUnoC}}
 }
 \concept{Concordance survival measures}
+\concept{crank survival measures}
 \concept{survival measures}

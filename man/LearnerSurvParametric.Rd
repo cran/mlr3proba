@@ -48,7 +48,7 @@ lrn("surv.parametric")
 \item Type: "surv"
 \item Predict Types: \verb{distr, lp, crank}
 \item Feature Types: \verb{logical, integer, numeric, factor}
-\item Packages: \CRANpkg{survival} \CRANpkg{distr6}
+\item Packages: \CRANpkg{survival} \CRANpkg{distr6} \CRANpkg{set6}
 }
 }
 
@@ -68,6 +68,7 @@ Other survival learners:
 \code{\link{LearnerSurvKaplan}},
 \code{\link{LearnerSurvMboost}},
 \code{\link{LearnerSurvNelson}},
+\code{\link{LearnerSurvObliqueRSF}},
 \code{\link{LearnerSurvPenalized}},
 \code{\link{LearnerSurvRandomForestSRC}},
 \code{\link{LearnerSurvRanger}},
