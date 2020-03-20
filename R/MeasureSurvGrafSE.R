@@ -1,15 +1,13 @@
 #' @template surv_measure
 #' @templateVar title Standard Error of Integrated Graf Score
-#' @templateVar inherit `MeasureSurvIntegrated`/[MeasureSurv]
 #' @templateVar fullname MeasureSurvGrafSE
-#' @templateVar pars integrated = TRUE, times
-#' @templateVar int_par TRUE
-#' @templateVar times_par TRUE
 #'
 #' @description
 #' Calculates the standard error of [MeasureSurvGraf].
 #'
 #' @template learner_integratedSE
+#' @template param_integrated
+#' @template param_times
 #'
 #' @references
 #' \cite{mlr3proba}{graf_1999}
@@ -20,6 +18,8 @@
 MeasureSurvGrafSE = R6::R6Class("MeasureSurvGrafSE",
   inherit = MeasureSurvIntegrated,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function(integrated = TRUE, times) {
       super$initialize(
         integrated = integrated,
@@ -31,9 +31,11 @@ MeasureSurvGrafSE = R6::R6Class("MeasureSurvGrafSE",
         predict_type = "distr",
         properties = character()
       )
-    },
+    }
+  ),
 
-    score_internal = function(prediction, ...) {
+  private = list(
+    .score = function(prediction, ...) {
       integrated_se(score = weighted_graf(truth = prediction$truth,
                                           distribution = prediction$distr,
                                           times = self$times),

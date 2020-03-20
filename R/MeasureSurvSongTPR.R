@@ -1,12 +1,6 @@
 #' @template surv_measure
 #' @templateVar title Song and Zhou's TPR
-#' @templateVar inherit `MeasureSurvAUC`/[MeasureSurv]
 #' @templateVar fullname MeasureSurvSongTPR
-#' @templateVar shortname surv.songTPR
-#' @templateVar pars times = 0, lp_thresh = 0, type = c("incident","cumulative")
-#' @templateVar times_par TRUE
-#' @templateVar thresh_par TRUE
-#' @templateVar type_par TRUE
 #'
 #' @description
 #' Calls [survAUC::sens.sh()].
@@ -17,6 +11,11 @@
 #' specified.
 #'
 #' @template measure_survAUC
+#' @template param_times
+#' @template param_thresh
+#' @template param_measure_type
+#' @template field_thresh
+#' @template field_measure_type
 #'
 #' @references
 #' \cite{mlr3proba}{song_2008}
@@ -27,6 +26,7 @@
 MeasureSurvSongTPR = R6Class("MeasureSurvSongTPR",
   inherit = MeasureSurvAUC,
   public = list(
+    #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function(times = 0, lp_thresh = 0, type = c("incident","cumulative")) {
 
       assertNumeric(times, len = 1)
@@ -39,19 +39,6 @@ MeasureSurvSongTPR = R6Class("MeasureSurvSongTPR",
       assertNumeric(lp_thresh, len = 1)
       private$.lp_thresh = lp_thresh
       private$.type <- match.arg(type)
-    },
-
-    score_internal = function(prediction, learner, task, train_set, ...) {
-      tpr = super$score_internal(prediction = prediction,
-                                 learner = learner,
-                                 task = task,
-                                 train_set = train_set,
-                                 FUN = survAUC::sens.sh,
-                                 type = self$type,
-                                 ...
-      )
-
-      tpr[, findInterval(self$lp_thresh, sort(unique(prediction$lp)))]
     }
   ),
 
@@ -79,6 +66,18 @@ MeasureSurvSongTPR = R6Class("MeasureSurvSongTPR",
 
   private = list(
     .lp_thresh = numeric(0),
-    .type = character(0)
+    .type = character(0),
+    .score = function(prediction, learner, task, train_set, ...) {
+      tpr = super$.score(prediction = prediction,
+                         learner = learner,
+                         task = task,
+                         train_set = train_set,
+                         FUN = survAUC::sens.sh,
+                         type = self$type,
+                         ...
+      )
+
+      tpr[, findInterval(self$lp_thresh, sort(unique(prediction$lp)))]
+    }
   )
 )

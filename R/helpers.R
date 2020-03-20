@@ -13,7 +13,11 @@ format_range = function(range) {
 
 # used in roxygen templates
 format_types = function(types) {
-  paste0(types, collapse = ", ")
+  if (length(types) == 0) {
+    return("-")
+  } else {
+    return(paste0(types, collapse = ", "))
+  }
 }
 
 toproper <- function(str, split = " ", fixed = TRUE){
@@ -22,4 +26,13 @@ toproper <- function(str, split = " ", fixed = TRUE){
     paste0(toupper(substr(x,1,1)), tolower(substr(x,2,1000)), collapse = split)
   })
   return(unlist(str))
+}
+
+check_subsetpattern = function(x, choices, empty.ok = TRUE){
+  if(all(grepl(paste0(choices, collapse="|"), x)))
+    return(TRUE)
+  else
+    return(sprintf("Must be a subset of %s, but is %s",
+                   paste0("{", paste0(choices, collapse = ", "), "}"),
+                   paste0("{", paste0(x, collapse = ", "), "}")))
 }

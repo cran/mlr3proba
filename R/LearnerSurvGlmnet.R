@@ -19,6 +19,8 @@
 #' @export
 LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet", inherit = LearnerSurv,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
         id = "surv.glmnet",
@@ -57,9 +59,11 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet", inherit = LearnerSurv,
         properties = "weights",
         packages = c("glmnet","survival")
       )
-    },
+    }
+  ),
 
-    train_internal = function(task) {
+  private = list(
+    .train = function(task) {
 
       pars = self$param_set$get_values(tags = "train")
 
@@ -86,7 +90,7 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet", inherit = LearnerSurv,
       invoke(glmnet::glmnet, x = x, y = target, family = "cox", .args = pars)
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
 
       # convert data to model matrix

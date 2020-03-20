@@ -7,8 +7,10 @@ Package website: [release](https://mlr3proba.mlr-org.com/) |
 Probabilistic Supervised Learning for
 **[mlr3](https://github.com/mlr-org/mlr3)**.
 
-[![Build
-Status](https://img.shields.io/travis/mlr-org/mlr3proba/master?label=Linux&logo=travis&style=flat-square)](https://travis-ci.org/mlr-org/mlr3proba)
+<!-- badges: start -->
+
+[![R CMD Check via
+{tic}](https://img.shields.io/github/workflow/status/mlr-org/mlr3proba/R%20CMD%20Check%20via%20%7Btic%7D?logo=github&label=R%20CMD%20Check%20via%20%7Btic%7D&style=flat-square)](https://github.com/mlr-org/mlr3proba/actions)
 [![cran
 checks](https://cranchecks.info/badges/worst/mlr3proba)](https://cran.r-project.org/web/checks/check_results_mlr3proba.html)
 
@@ -17,6 +19,7 @@ Badge](https://www.r-pkg.org/badges/version-ago/mlr3proba)](https://cran.r-proje
 [![codecov](https://codecov.io/gh/mlr-org/mlr3proba/branch/master/graph/badge.svg)](https://codecov.io/gh/mlr-org/mlr3proba)
 [![StackOverflow](https://img.shields.io/badge/stackoverflow-mlr3-orange.svg)](https://stackoverflow.com/questions/tagged/mlr3)
 [![Dependencies](https://tinyverse.netlify.com/badge/mlr3proba)](https://cran.r-project.org/package=mlr3proba)
+<!-- badges: end -->
 
 ## What is mlr3proba ?
 
@@ -118,7 +121,7 @@ remotes::install_github("mlr-org/mlr3proba")
 
 ### Survival Measures
 
-| ID                                                                                        | Learner                                 | Package                                                   |
+| ID                                                                                        | Measure                                 | Package                                                   |
 | :---------------------------------------------------------------------------------------- | :-------------------------------------- | :-------------------------------------------------------- |
 | [surv.beggC](https://mlr3proba.mlr-org.com/reference/MeasureSurvBeggC.html)               | Begg’s C-Index                          | [survAUC](https://CRAN.R-project.org/package=survAUC)     |
 | [surv.chamblessAUC](https://mlr3proba.mlr-org.com/reference/MeasureSurvChamblessAUC.html) | Chambless and Diao’s AUC                | [survAUC](https://CRAN.R-project.org/package=survAUC)     |
@@ -142,10 +145,32 @@ remotes::install_github("mlr-org/mlr3proba")
 | [surv.unoTPR](https://mlr3proba.mlr-org.com/reference/MeasureSurvUnoTPR.html)             | Uno’s TPR                               | [survAUC](https://CRAN.R-project.org/package=survAUC)     |
 | [surv.xuR2](https://mlr3proba.mlr-org.com/reference/MeasureSurvXuR2.html)                 | Xu and O’Quigley’s R2                   | [survAUC](https://CRAN.R-project.org/package=survAUC)     |
 
+## Density Estimation
+
+### Density Learners
+
+| ID                                                                                   | Learner                                                       | Package                                                       |
+| :----------------------------------------------------------------------------------- | :------------------------------------------------------------ | :------------------------------------------------------------ |
+| [dens.hist](https://mlr3proba.mlr-org.com/reference/LearnerDensKDE.html)             | Univariate Histogram Density Estimator                        | graphics                                                      |
+| [dens.kde](https://mlr3proba.mlr-org.com/reference/LearnerDensKDE.html)              | Univariate KDE for Different Kernels                          | [distr6](https://CRAN.R-project.org/package=distr6)           |
+| [dens.kdeKD](https://mlr3proba.mlr-org.com/reference/LearnerDensKDEkd.html)          | Nonparametric KDE Using Plug-in Method of Polansky and Baker  | [kerdiest](https://CRAN.R-project.org/package=kerdiest)       |
+| [dens.kdeKS](https://mlr3proba.mlr-org.com/reference/LearnerDensKDEks.html)          | Nonparametric Gaussian KDE                                    | [ks](https://CRAN.R-project.org/package=ks)                   |
+| [dens.locfit](https://mlr3proba.mlr-org.com/reference/LearnerDensLocfit.html)        | Nonparametric KDE Using Gaussian kernel                       | [locfit](https://CRAN.R-project.org/package=locfit)           |
+| [dens.logspline](https://mlr3proba.mlr-org.com/reference/LearnerDensLogspline.html)  | Logspline Method for Density Estimation                       | [logspline](https://CRAN.R-project.org/package=logspline)     |
+| [dens.mixed](https://mlr3proba.mlr-org.com/reference/LearnerDensMixed.html)          | KDE Using Li and Racine Bandwidth Specification               | [np](https://CRAN.R-project.org/package=np)                   |
+| [dens.nonpar](https://mlr3proba.mlr-org.com/reference/LearnerDensNonparametric.html) | Nonparametric KDE Using Normal Optimal Smoothing Parameter    | [sm](https://CRAN.R-project.org/package=sm)                   |
+| [dens.pen](https://mlr3proba.mlr-org.com/reference/LearnerDensPenalized.html)        | Density Estimation with a Penalized Mixture                   | [pendensity](https://CRAN.R-project.org/package=pendensity)   |
+| [dens.plug](https://mlr3proba.mlr-org.com/reference/LearnerDensPlugin.html)          | Density Estimation with Iterative Plug-in Bandwidth Selection | [plugdensity](https://CRAN.R-project.org/package=plugdensity) |
+| [dens.spline](https://mlr3proba.mlr-org.com/reference/LearnerDensSpline.html)        | Density Estimation Using Smoothing Spline ANOVA               | [gss](https://CRAN.R-project.org/package=gss)                 |
+
+### Density Measures
+
+| ID                                                                              | Measure  | Package                                                   |
+| :------------------------------------------------------------------------------ | :------- | :-------------------------------------------------------- |
+| [dens.logloss](https://mlr3proba.mlr-org.com/reference/MeasureDensLogloss.html) | Log Loss | [mlr3proba](https://CRAN.R-project.org/package=mlr3proba) |
+
 ## Near-Future Plans
 
-  - Add `TaskDensity`, `PredictionDensity`, `LearnerDensity`, and
-    associated learners/measures
   - Add `prob` predict type to `TaskRegr`, and associated
     learners/measures
   - Allow `MeasureSurv` to return measures at multiple time-points

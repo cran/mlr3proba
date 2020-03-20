@@ -1,6 +1,5 @@
 #' @template surv_measure
 #' @templateVar title Root Mean Squared Error
-#' @templateVar inherit [MeasureSurv]
 #' @templateVar fullname MeasureSurvRMSE
 #'
 #' @description
@@ -17,6 +16,7 @@
 MeasureSurvRMSE = R6::R6Class("MeasureSurvRMSE",
   inherit = MeasureSurv,
   public = list(
+    #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
         id = "surv.rmse",
@@ -24,9 +24,11 @@ MeasureSurvRMSE = R6::R6Class("MeasureSurvRMSE",
         minimize = TRUE,
         predict_type = "response"
       )
-    },
+    }
+  ),
 
-    score_internal = function(prediction, ...) {
+  private = list(
+    .score = function(prediction, ...) {
       sqrt(mean(surv_mse(prediction$truth, prediction$response)$mse))
     }
   )

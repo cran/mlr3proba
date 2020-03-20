@@ -1,3 +1,12 @@
+# mlr3proba 0.1.4
+
+* Density estimation has now been added to mlr3proba, see `TaskDens`, `LearnerDens`, `PredictionDens`, and `MeasureDens`.
+* Added `mlr_tasks_faithful` and `mlr_tasks_precip` for density task examples
+* Added `mlr_task_generators_simdens` for generating density tasks
+* Added learners for density estimation, see `mlr3::mlr_learners$keys("^dens")` for the full list
+* In line with mlr3 0.1.7, public methods `train_internal`, `predict_internal`, `score_internal` are now private methods `.train`,`.predict`,`.score` 
+* Converted to roxygen2 R6 documentation
+
 # mlr3proba 0.1.3
 
 * Changed `lp` in `surv.parametric` to include the intercept, which is in line with `survival::survreg`. Now `exp(pred$lp)` is equal to the predicted survival time for AFTs

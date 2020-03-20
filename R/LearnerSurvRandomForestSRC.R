@@ -23,6 +23,8 @@
 #' @export
 LearnerSurvRandomForestSRC = R6Class("LearnerSurvRandomForestSRC", inherit = LearnerSurv,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ParamSet$new(
         params = list(
@@ -74,14 +76,51 @@ LearnerSurvRandomForestSRC = R6Class("LearnerSurvRandomForestSRC", inherit = Lea
       )
     },
 
-    train_internal = function(task) {
+    #' @description
+    #' The importance scores are extracted from the model slot `variable.importance`.
+    #' @return Named `numeric()`.
+    importance = function() {
+      if (is.null(self$model)) {
+        stopf("No model stored")
+      }
+      if (is.null(self$model$importance)) {
+        stopf("Importance not stored. Set 'importance' parameter to one of {'TRUE', 'permute', 'random', 'anti'}.")
+      }
+
+      sort(self$model$importance, decreasing = TRUE)
+    },
+
+    #' @description
+    #' Selected features are extracted from the model slot `frame$var`.
+    #' @return `character()`.
+    selected_features = function() {
+      if (is.null(self$model)) {
+        stopf("No model stored")
+      }
+      if (is.null(self$model$var.used)) {
+        stopf("Variables used not stored. Set var.used to one of {'all.trees', 'by.tree'}.")
+      }
+
+      self$model$var.used
+    }
+
+    # Note that we could return prediction error but it would first have to be evaluated using Harrel's C
+    # to be in line with other learners such as rpart.
+    #
+    # oob_error = function() {
+    #   self$model$prediction.error
+    # }
+  ),
+
+  private = list(
+    .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
 
       invoke(randomForestSRC::rfsrc, formula = task$formula(), data = task$data(),
-        case.wt = task$weights$weight, .args = pv)
+             case.wt = task$weights$weight, .args = pv)
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       newdata = task$data(cols = task$feature_names)
       pars = self$param_set$get_values(tags = "predict")
       # estimator parameter is used internally for composition (i.e. outside of rfsrc) and is
@@ -110,35 +149,6 @@ LearnerSurvRandomForestSRC = R6Class("LearnerSurvRandomForestSRC", inherit = Lea
 
       PredictionSurv$new(task = task, crank = crank, distr = distr)
 
-    },
-
-    importance = function() {
-      if (is.null(self$model)) {
-        stopf("No model stored")
-      }
-      if (is.null(self$model$importance)) {
-        stopf("Importance not stored. Set 'importance' parameter to one of {'TRUE', 'permute', 'random', 'anti'}.")
-      }
-
-      sort(self$model$importance, decreasing = TRUE)
-    },
-
-    selected_features = function() {
-      if (is.null(self$model)) {
-        stopf("No model stored")
-      }
-      if (is.null(self$model$var.used)) {
-        stopf("Variables used not stored. Set var.used to one of {'all.trees', 'by.tree'}.")
-      }
-
-      self$model$var.used
     }
-
-    # Note that we could return prediction error but it would first have to be evaluated using Harrel's C
-    # to be in line with other learners such as rpart.
-    #
-    # oob_error = function() {
-    #   self$model$prediction.error
-    # }
   )
 )

@@ -3,6 +3,7 @@
 #' @templateVar fullname LearnerSurvRanger
 #' @templateVar caller [ranger::ranger()]
 #' @templateVar distr using [ranger::predict.ranger()]
+#' @description
 #'
 #' @references
 #' \cite{mlr3proba}{wright_2017}
@@ -12,6 +13,8 @@
 #' @export
 LearnerSurvRanger = R6Class("LearnerSurvRanger", inherit = LearnerSurv,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
         id = "surv.ranger",
@@ -46,21 +49,44 @@ LearnerSurvRanger = R6Class("LearnerSurvRanger", inherit = LearnerSurv,
       )
     },
 
-    train_internal = function(task) {
+    #' @description
+    #' The importance scores are extracted from the model slot `variable.importance`.
+    #' @return Named `numeric()`.
+    importance = function() {
+      if (is.null(self$model)) {
+        stopf("No model stored")
+      }
+      if (self$model$importance.mode == "none") {
+        stopf("No importance stored")
+      }
+
+      sort(self$model$variable.importance, decreasing = TRUE)
+    },
+
+    #' @description
+    #' The out-of-bag error is extracted from the model slot `prediction.error`.
+    #' @return `numeric(1)`.
+    oob_error = function() {
+      self$model$prediction.error
+    }
+  ),
+
+  private = list(
+    .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
       targets = task$target_names
 
       invoke(ranger::ranger,
-        formula = NULL,
-        dependent.variable.name = targets[1L],
-        status.variable.name = targets[2L],
-        data = task$data(),
-        case.weights = task$weights$weight,
-        .args = pv
+             formula = NULL,
+             dependent.variable.name = targets[1L],
+             status.variable.name = targets[2L],
+             data = task$data(),
+             case.weights = task$weights$weight,
+             .args = pv
       )
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       newdata = task$data(cols = task$feature_names)
       fit = predict(object = self$model, data = newdata)
 
@@ -75,21 +101,6 @@ LearnerSurvRanger = R6Class("LearnerSurvRanger", inherit = LearnerSurv,
       crank = as.numeric(sapply(x, function(y) sum(y[,1] * c(y[,2][1], diff(y[,2])))))
 
       PredictionSurv$new(task = task, distr = distr, crank = crank)
-    },
-
-    importance = function() {
-      if (is.null(self$model)) {
-        stopf("No model stored")
-      }
-      if (self$model$importance.mode == "none") {
-        stopf("No importance stored")
-      }
-
-      sort(self$model$variable.importance, decreasing = TRUE)
-    },
-
-    oob_error = function() {
-      self$model$prediction.error
     }
   )
 )

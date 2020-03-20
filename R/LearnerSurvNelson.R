@@ -3,6 +3,7 @@
 #' @templateVar fullname LearnerSurvNelson
 #' @templateVar caller [survival::survfit()]
 #' @templateVar distr by estimating the cumulative hazard function with [survival::survfit()]
+#' @description
 #'
 #' @references
 #' \cite{mlr3proba}{nelson_1969}
@@ -14,6 +15,8 @@
 #' @export
 LearnerSurvNelson = R6Class("LearnerSurvNelson", inherit = LearnerSurv,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
         id = "surv.nelson",
@@ -22,13 +25,15 @@ LearnerSurvNelson = R6Class("LearnerSurvNelson", inherit = LearnerSurv,
         properties = "missings",
         packages = c("survival", "distr6")
      )
+    }
+  ),
+
+  private = list(
+    .train = function(task) {
+      invoke(survival::survfit, formula = task$formula(1), data = task$data())
     },
 
-    train_internal = function(task) {
-      invoke(survival::survfit, formula = task$formula(1), data = task$data())
-      },
-
-    predict_internal = function(task) {
+    .predict = function(task) {
       # Ensures that at all times before the first observed time the cumulative hazard is 0, as expected.
       # cumhaz = c(0, self$model$cumhaz)
       # time = c(0, self$model$time)

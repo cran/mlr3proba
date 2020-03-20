@@ -38,6 +38,8 @@
 #' resample(task, learner, resampling)
 LearnerSurvMboost = R6Class("LearnerSurvMboost", inherit = LearnerSurv,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ParamSet$new(
         params = list(
@@ -69,9 +71,11 @@ LearnerSurvMboost = R6Class("LearnerSurvMboost", inherit = LearnerSurv,
         # properties = "weights",
         packages = c("mboost","distr6","survival")
       )
-    },
+    }
+  ),
 
-    train_internal = function(task) {
+  private = list(
+    .train = function(task) {
 
       pars = self$param_set$get_values(tags = "train")
 
@@ -106,7 +110,7 @@ LearnerSurvMboost = R6Class("LearnerSurvMboost", inherit = LearnerSurv,
       })
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       newdata = task$data(cols = task$feature_names)
       # predict linear predictor
       lp = as.numeric(invoke(predict, self$model, newdata = newdata, type = "link"))

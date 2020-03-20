@@ -1,11 +1,6 @@
 #' @template surv_measure
 #' @templateVar title Uno's TNR
-#' @templateVar inherit `MeasureSurvAUC`/[MeasureSurv]
 #' @templateVar fullname MeasureSurvUnoTNR
-#' @templateVar shortname surv.unoTNR
-#' @templateVar pars times = 0, lp_thresh = 0
-#' @templateVar times_par TRUE
-#' @templateVar thresh_par TRUE
 #'
 #' @description
 #' Calls [survAUC::spec.uno()].
@@ -16,6 +11,10 @@
 #' specified.
 #'
 #' @template measure_survAUC
+#' @template param_times
+#' @template param_thresh
+#' @template field_thresh
+#'
 #' @family lp survival measures
 #'
 #' @references
@@ -26,6 +25,7 @@
 MeasureSurvUnoTNR = R6Class("MeasureSurvUnoTNR",
   inherit = MeasureSurvAUC,
   public = list(
+    #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function(times = 0, lp_thresh = 0) {
 
       assertNumeric(times, len = 1)
@@ -38,15 +38,6 @@ MeasureSurvUnoTNR = R6Class("MeasureSurvUnoTNR",
 
       assertNumeric(lp_thresh, len = 1)
       private$.lp_thresh = lp_thresh
-    },
-
-    score_internal = function(prediction, ...) {
-      tnr = super$score_internal(prediction = prediction,
-                                 FUN = survAUC::spec.uno,
-                                 task = task
-      )
-
-      tnr[, findInterval(self$lp_thresh, sort(unique(prediction$lp)))]
     }
   ),
 
@@ -62,6 +53,14 @@ MeasureSurvUnoTNR = R6Class("MeasureSurvUnoTNR",
   ),
 
   private = list(
-    .lp_thresh = numeric(0)
+    .lp_thresh = numeric(0),
+    .score = function(prediction, ...) {
+      tnr = super$.score(prediction = prediction,
+                         FUN = survAUC::spec.uno,
+                         task = task
+      )
+
+      tnr[, findInterval(self$lp_thresh, sort(unique(prediction$lp)))]
+    }
   )
 )

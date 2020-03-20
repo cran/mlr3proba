@@ -1,7 +1,7 @@
 # MeasureRegrLogloss = R6::R6Class("MeasureRegrLogloss",
 #                             inherit = MeasureRegr,
 #                             public = list(
-#                               initialize = function() {
+#                               #' @description Creates a new instance of this [R6][R6::R6Class] class. initialize = function() {
 #                                 super$initialize(
 #                                   id = "regr.logloss",
 #                                   range = c(0, Inf),
@@ -12,7 +12,7 @@
 #                                 )
 #                               },
 #
-#                               score_internal = function(prediction, ...) {
+#                               .score = function(prediction, ...) {
 #                                 return(mean(-log(as.numeric(do.call(prediction$prob$pdf,
 #                                                                     as.list(prediction$truth))))))
 #                               }

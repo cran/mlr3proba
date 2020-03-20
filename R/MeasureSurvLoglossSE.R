@@ -1,10 +1,8 @@
 #' @template surv_measure
 #' @templateVar title Standard Error of Log loss
-#' @templateVar inherit [MeasureSurvLogloss]/[MeasureSurv]
 #' @templateVar fullname MeasureSurvLoglossSE
-#' @templateVar shortname surv.loglossSE
-#' @templateVar pars eps = 1e-15
-#' @templateVar eps_par TRUE
+#'
+#' @template param_eps
 #'
 #' @description
 #' Calculates the standard error of [MeasureSurvLogloss].
@@ -21,11 +19,15 @@
 MeasureSurvLoglossSE = R6::R6Class("MeasureSurvLoglossSE",
     inherit = MeasureSurvLogloss,
     public = list(
+      #' @description
+      #' Creates a new instance of this [R6][R6::R6Class] class.
       initialize = function(eps = 1e-15) {
         super$initialize(eps, id = "surv.loglossSE")
-      },
+      }
+    ),
 
-      score_internal = function(prediction, ...) {
+    private = list(
+      .score = function(prediction, ...) {
         ll = surv_logloss(prediction$truth, prediction$distr, self$eps)
 
         sd(ll)/sqrt(length(ll))

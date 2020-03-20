@@ -1,8 +1,5 @@
 #' @title PipeOpDistrCompositor
-#'
-#' @usage NULL
-#' @aliases mlr_pipeops_distrcompositor
-#' @format [`R6Class`] inheriting from [`PipeOp`].
+#' @aliases mlr_pipeops_distrcompose
 #'
 #' @description
 #' Estimates (or 'composes') a survival distribution from a predicted baseline `distr` and a
@@ -16,14 +13,14 @@
 #' These assumptions are strong and may not be reasonable. Future updates will upgrade this
 #' compositor to be more flexible.
 #'
-#' @section Construction:
+#' @section Dictionary:
+#' This [PipeOp][mlr3pipelines::PipeOp] can be instantiated via the [dictionary][mlr3misc::Dictionary]
+#' [mlr3pipelines::mlr_pipeops] or with the associated sugar function [mlr3pipelines::po()]:
 #' ```
-#' PipeOpDistrCompositor$new(id = "distrcompose", param_vals = list())
+#' PipeOpDistrCompositor$new()
+#' mlr_pipeops$get("distrcompose")
+#' po("distrcompose")
 #' ```
-#' * `id` :: `character(1)` \cr
-#'   Identifier of the resulting  object, default `"distrcompose"`.
-#' * `param_vals` :: named `list` \cr
-#'   List of hyperparameter settings, overwriting the hyperparameter settings that would otherwise be set during construction. Default `list()`.
 #'
 #' @section Input and Output Channels:
 #' [PipeOpDistrCompositor] has two input channels, "base" and "pred". Both input channels take
@@ -61,10 +58,10 @@
 #' assumed to be the `lp` - **this may be a strong and unreasonable assumption.**
 #'
 #' @section Fields:
-#' Only fields inherited from [PipeOp].
+#' Only fields inherited from [PipeOp][mlr3pipelines::PipeOp].
 #'
 #' @section Methods:
-#' Only methods inherited from [PipeOp].
+#' Only methods inherited from [PipeOp][mlr3pipelines::PipeOp].
 #'
 #' @seealso [mlr3pipelines::PipeOp] and [distrcompositor]
 #' @export
@@ -104,6 +101,14 @@
 PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
   inherit = PipeOp,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
+    #'
+    #' @param id (`character(1)`)\cr
+    #'   Identifier of the resulting  object.
+    #' @param param_vals (`list()`)\cr
+    #'   List of hyperparameter settings, overwriting the hyperparameter settings that would
+    #'   otherwise be set during construction.
     initialize = function(id = "distrcompose", param_vals = list(form = "aft", overwrite = FALSE)) {
       super$initialize(id = id,
                        param_set = ParamSet$new(params = list(
@@ -116,11 +121,19 @@ PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
                        packages = "distr6")
       },
 
+    #' @description train_internal
+    #' Internal `train` function, will be moved to `private` in a near-future update, should be ignored.
+    #' @param inputs
+    #' Ignore.
     train_internal = function(inputs) {
       self$state = list()
       list(NULL)
-      },
+    },
 
+    #' @description predict_internal
+    #' Internal `predict` function, will be moved to `private` in a near-future update, should be ignored.
+    #' @param inputs
+    #' Ignore.
     predict_internal = function(inputs) {
       base = inputs$base
       inpred = inputs$pred
@@ -142,7 +155,7 @@ PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
         if(length(form) == 0) form = "aft"
 
         base = base$distr[1]
-        times = unlist(base$support()$elements)
+        times = unlist(base$support$elements)
 
         nr = nrow(inpred$data$tab)
         nc = length(times)
@@ -181,4 +194,71 @@ PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
       }
     }
   )
+
+  # private = list(
+  #   .train = function(inputs) {
+  #     self$state = list()
+  #     list(NULL)
+  #   },
+  #
+  #   .predict = function(inputs) {
+  #     base = inputs$base
+  #     inpred = inputs$pred
+  #
+  #     overwrite = self$param_set$values$overwrite
+  #     if(length(overwrite) == 0) overwrite = FALSE
+  #
+  #     if ("distr" %in% inpred$predict_types & !overwrite) {
+  #       return(list(inpred))
+  #     } else {
+  #       assert("distr" %in% base$predict_types)
+  #
+  #       row_ids = inpred$row_ids
+  #       truth = inpred$truth
+  #       map(inputs, function(x) assert_true(identical(row_ids, x$row_ids)))
+  #       map(inputs, function(x) assert_true(identical(truth, x$truth)))
+  #
+  #       form = self$param_set$values$form
+  #       if(length(form) == 0) form = "aft"
+  #
+  #       base = base$distr[1]
+  #       times = unlist(base$support()$elements)
+  #
+  #       nr = nrow(inpred$data$tab)
+  #       nc = length(times)
+  #
+  #       if(is.null(inpred$lp) | length(inpred$lp) == 0)
+  #         lp = inpred$crank
+  #       else
+  #         lp = inpred$lp
+  #
+  #       timesmat = matrix(times, nrow = nr, ncol = nc, byrow = T)
+  #       survmat = matrix(base$survival(times), nrow = nr, ncol = nc, byrow = T)
+  #       lpmat = matrix(lp, nrow = nr, ncol = nc)
+  #
+  #       if(form == "ph")
+  #         cdf = 1 - (survmat ^ exp(lpmat))
+  #       else if (form == "aft")
+  #         cdf = t(apply(timesmat / exp(lpmat), 1, function(x) base$cdf(x)))
+  #       else if (form == "po")
+  #         cdf = 1 - (survmat * ({exp(-lpmat) + ((1 - exp(-lpmat)) * survmat)}^-1))
+  #
+  #       x = rep(list(data = data.frame(x = times, cdf = 0)), nr)
+  #
+  #       for(i in seq_along(times))
+  #         x[[i]]$cdf = cdf[i,]
+  #
+  #       distr = distr6::VectorDistribution$new(distribution = "WeightedDiscrete", params = x,
+  #                                              decorators = c("CoreStatistics", "ExoticStatistics"))
+  #
+  #       if(is.null(inpred$lp) | length(inpred$lp) == 0)
+  #         lp = NULL
+  #       else
+  #         lp = inpred$lp
+  #
+  #       return(list(PredictionSurv$new(row_ids = row_ids, truth = truth,
+  #                                      crank = inpred$crank, distr = distr, lp = lp)))
+  #     }
+  #   }
+  # )
 )

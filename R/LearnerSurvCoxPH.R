@@ -4,6 +4,8 @@
 #' @templateVar caller [survival::coxph()]
 #' @templateVar distr by [survival::survfit.coxph()]
 #' @templateVar lp by [survival::predict.coxph()]
+#' @description
+#'
 #'
 #' @references
 #' \cite{mlr3proba}{cox_1972}
@@ -11,6 +13,8 @@
 #' @export
 LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH", inherit = LearnerSurv,
   public = list(
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
         id = "surv.coxph",
@@ -29,7 +33,34 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH", inherit = LearnerSurv,
       )
     },
 
-    train_internal = function(task) {
+    #' @description
+    #' The importance scores are extracted from the model slot `variable.importance`.
+    #' @return Named `numeric()`.
+    importance = function() {
+     if (is.null(self$model)) {
+       stopf("No model stored")
+     }
+      # coefficient importance defined by the p-values
+      sort(1-summary(self$model)$coefficients[,5L], decreasing = TRUE)
+    },
+
+    #' @description
+    #' Selected features are extracted from the model slot `frame$var`.
+    #' @return `character()`.
+    selected_features = function() {
+
+    if (is.null(self$model)) {
+      stopf("No model stored")
+    }
+
+    # features are selected if their coefficients are non-NA
+    beta = coef(self$model)
+    names(beta)[!is.na(beta)]
+    }
+  ),
+
+  private = list(
+    .train = function(task) {
 
       pv = self$param_set$get_values(tags = "train")
 
@@ -40,7 +71,7 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH", inherit = LearnerSurv,
       invoke(survival::coxph, formula = task$formula(), data = task$data(), .args = pv, x = TRUE)
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
 
       newdata = task$data(cols = task$feature_names)
 
@@ -68,25 +99,6 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH", inherit = LearnerSurv,
 
       # note the ranking of lp and crank is identical
       PredictionSurv$new(task = task, crank = lp, distr = distr, lp = lp)
-    },
-
-    importance = function() {
-     if (is.null(self$model)) {
-       stopf("No model stored")
-     }
-      # coefficient importance defined by the p-values
-      sort(1-summary(self$model)$coefficients[,5L], decreasing = TRUE)
-    },
-
-    selected_features = function() {
-
-    if (is.null(self$model)) {
-      stopf("No model stored")
-    }
-
-    # features are selected if their coefficients are non-NA
-    beta = coef(self$model)
-    names(beta)[!is.na(beta)]
     }
   )
 )

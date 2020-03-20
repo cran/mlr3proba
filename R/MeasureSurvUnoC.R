@@ -1,8 +1,6 @@
 #' @template surv_measure
 #' @templateVar title Uno's C-Index
-#' @templateVar inherit [MeasureSurv]
 #' @templateVar fullname MeasureSurvUnoC
-#' @templateVar shortname surv.unoC
 #'
 #' @description
 #' Calls [survAUC::UnoC()].
@@ -20,6 +18,7 @@
 MeasureSurvUnoC = R6Class("MeasureSurvUnoC",
   inherit = MeasureSurv,
   public = list(
+    #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
         id = "surv.unoC",
@@ -29,9 +28,11 @@ MeasureSurvUnoC = R6Class("MeasureSurvUnoC",
         predict_type = "crank",
         properties = c("na_score", "requires_task", "requires_train_set")
       )
-    },
+    }
+  ),
 
-    score_internal = function(prediction, task, train_set, ...) {
+  private = list(
+    .score = function(prediction, task, train_set, ...) {
       surv_train = task$truth(train_set)
       perf = survAUC::UnoC(surv_train, prediction$truth, prediction$crank)
       if (is.nan(perf)) {
