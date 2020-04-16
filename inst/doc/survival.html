@@ -581,19 +581,17 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb7-6" data-line-number="6">composed_lrn_gbm =<span class="st"> </span><span class="kw">distrcompositor</span>(<span class="kw">lrn</span>(<span class="st">&quot;surv.gbm&quot;</span>, <span class="dt">bag.fraction =</span> <span class="dv">1</span>, <span class="dt">n.trees =</span> 50L),</a>
 <a class="sourceLine" id="cb7-7" data-line-number="7">                                   <span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;ph&quot;</span>)</a>
 <a class="sourceLine" id="cb7-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">lrns =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">paste0</span>(<span class="st">&quot;surv.&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;coxph&quot;</span>, <span class="st">&quot;parametric&quot;</span>)), lrn)</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">lrns[[<span class="dv">3</span>]]<span class="op">$</span>param_set<span class="op">$</span>values =<span class="st"> </span><span class="kw">list</span>(<span class="dt">dist =</span> <span class="st">&quot;weibull&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;ph&quot;</span>)</a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">design =<span class="st"> </span><span class="kw">benchmark_grid</span>(<span class="dt">tasks =</span> task, <span class="dt">learners =</span> <span class="kw">c</span>(lrns, <span class="kw">list</span>(composed_lrn_gbm)),</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">                        <span class="dt">resamplings =</span> <span class="kw">rsmp</span>(<span class="st">&quot;cv&quot;</span>, <span class="dt">folds =</span> <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">bm =<span class="st"> </span><span class="kw">benchmark</span>(design)</a>
-<a class="sourceLine" id="cb7-16" data-line-number="16">bm<span class="op">$</span><span class="kw">aggregate</span>(<span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.harrellC&quot;</span>,<span class="st">&quot;surv.graf&quot;</span>,<span class="st">&quot;surv.grafSE&quot;</span>), msr))[,<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)]</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt;                           learner_id surv.harrellC surv.graf surv.grafSE</span></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; 1:                       surv.kaplan     0.5000000 0.2107141  0.02003976</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; 2:                        surv.coxph     0.5003190 0.2259178  0.03210873</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; 3:                   surv.parametric     0.5066986 0.4481043  0.06730402</span></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt; 4: surv.kaplan.surv.gbm.distrcompose     0.4811204 0.2774313  0.04296744</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-9" data-line-number="9">lrns =<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">paste0</span>(<span class="st">&quot;surv.&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;kaplan&quot;</span>, <span class="st">&quot;coxph&quot;</span>)), lrn)</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">design =<span class="st"> </span><span class="kw">benchmark_grid</span>(<span class="dt">tasks =</span> task, <span class="dt">learners =</span> <span class="kw">c</span>(lrns, <span class="kw">list</span>(composed_lrn_gbm)),</a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">                        <span class="dt">resamplings =</span> <span class="kw">rsmp</span>(<span class="st">&quot;cv&quot;</span>, <span class="dt">folds =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14">bm =<span class="st"> </span><span class="kw">benchmark</span>(design)</a>
+<a class="sourceLine" id="cb7-15" data-line-number="15">bm<span class="op">$</span><span class="kw">aggregate</span>(<span class="kw">lapply</span>(<span class="kw">c</span>(<span class="st">&quot;surv.harrellC&quot;</span>,<span class="st">&quot;surv.graf&quot;</span>,<span class="st">&quot;surv.grafSE&quot;</span>), msr))[,<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)]</a>
+<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt;                           learner_id surv.harrellC surv.graf surv.grafSE</span></a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; 1:                       surv.kaplan     0.5000000 0.2107141  0.02003976</span></a>
+<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; 2:                        surv.coxph     0.5003190 0.2259178  0.03210873</span></a>
+<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; 3: surv.kaplan.surv.gbm.distrcompose     0.4811204 0.2774313  0.04296744</span></a></code></pre></div>
 </div>
 
 

@@ -1,3 +1,11 @@
+# mlr3proba 0.1.5
+
+* `LearnerSurvParametric` and `LearnerSurvNelson` moved to `mlr3learners/mlr3learners.survival ` repo
+* `LearnerSurvCoxboost` and `LearnerSurvCVCoxboost` moved to `mlr3learners/mlr3learners.coxboost ` repo
+* `LearnerSurvSVM` moved to `mlr3learners/mlr3learners.survivalsvm` repo
+* In the next release, all learners except for `LearnerSurvKaplan`, `LearnerSurvCoxPH`, and `LearnerDensHist` will be moved to the `mlr3learners` org
+* Minor internal changes
+
 # mlr3proba 0.1.4
 
 * Density estimation has now been added to mlr3proba, see `TaskDens`, `LearnerDens`, `PredictionDens`, and `MeasureDens`.

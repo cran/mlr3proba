@@ -1,6 +1,6 @@
 Package: mlr3proba
 Title: Probabilistic Supervised Learning for 'mlr3'
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: 
     c(person(given = "Raphael",
              family = "Sonabend",
@@ -34,20 +34,20 @@ URL: https://mlr3proba.mlr-org.com,
         https://github.com/mlr-org/mlr3proba
 BugReports: https://github.com/mlr-org/mlr3proba/issues
 Depends: R (>= 3.1.0)
-Imports: checkmate, data.table, distr6 (>= 1.3.5), mlr3 (>= 0.1.7),
+Imports: checkmate, data.table, distr6 (>= 1.3.6), mlr3 (>= 0.1.8),
         mlr3misc (>= 0.1.7), mlr3pipelines, paradox (>= 0.1.0), R6,
         survival
-Suggests: bibtex, flexsurv, gbm, glmnet, kerdiest, gss, knitr, ks, lgr,
-        logspline, locfit, mboost, mlr3tuning, np, obliqueRSF, pec,
-        penalized, pendensity, plugdensity, randomForestSRC, ranger,
-        riskRegression, rpart, set6, simsurv, sm, survAUC, survivalsvm,
-        testthat
+Suggests: bibtex, CoxBoost, flexsurv, gbm, ggplot2, glmnet, gss,
+        kerdiest, knitr, ks, lgr, logspline, locfit, Matrix, mboost,
+        mlr3tuning, np, obliqueRSF, pec, penalized, pendensity,
+        plugdensity, randomForestSRC, ranger, riskRegression, rpart,
+        set6, simsurv, sm, survAUC, survivalsvm, testthat, xgboost
 VignetteBuilder: knitr
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 RdMacros: mlr3misc
 Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'LearnerDensKDEkd.R' 'LearnerDensKDEks.R' 'LearnerDensLocfit.R'
@@ -60,12 +60,11 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'LearnerSurvFlexible.R' 'LearnerSurvGBM.R'
         'LearnerSurvGamboost.R' 'LearnerSurvGlmboost.R'
         'LearnerSurvGlmnet.R' 'LearnerSurvKaplan.R'
-        'LearnerSurvMboost.R' 'LearnerSurvNelson.R'
-        'LearnerSurvObliqueRSF.R' 'predict_survreg.R'
-        'LearnerSurvParametric.R' 'LearnerSurvPenalized.R'
-        'LearnerSurvRandomForestSRC.R' 'LearnerSurvRanger.R'
-        'LearnerSurvRpart.R' 'LearnerSurvSVM.R' 'MeasureDens.R'
-        'MeasureDensLogloss.R' 'MeasureRegrLogloss.R' 'MeasureSurv.R'
+        'LearnerSurvMboost.R' 'LearnerSurvObliqueRSF.R'
+        'LearnerSurvPenalized.R' 'LearnerSurvRandomForestSRC.R'
+        'LearnerSurvRanger.R' 'LearnerSurvRpart.R'
+        'LearnerSurvXGBoost.R' 'MeasureDens.R' 'MeasureDensLogloss.R'
+        'MeasureRegrLogloss.R' 'MeasureSurv.R'
         'MeasureSurvIntegrated.R' 'MeasureSurvAUC.R'
         'MeasureSurvBeggC.R' 'MeasureSurvChamblessAUC.R'
         'MeasureSurvGonenHellersC.R' 'MeasureSurvGraf.R'
@@ -86,10 +85,10 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'TaskGeneratorSimdens.R' 'TaskGeneratorSimsurv.R'
         'TaskProbreg.R' 'TaskSurv.R' 'TaskSurv_lung.R'
         'TaskSurv_rats.R' 'TaskSurv_unemployment.R' 'assertions.R'
-        'crankcompositor.R' 'distrcompositor.R' 'helpers.R'
-        'histogram.R' 'integrated_scores.R' 'surv_measures.R'
-        'weighted_survival_score.R' 'zzz.R'
-Packaged: 2020-03-20 11:45:07 UTC; raphael
+        'autoplot.R' 'crankcompositor.R' 'distrcompositor.R'
+        'helpers.R' 'histogram.R' 'integrated_scores.R' 'pecs.R'
+        'surv_measures.R' 'weighted_survival_score.R' 'zzz.R'
+Packaged: 2020-04-16 15:27:11 UTC; raphael
 Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Franz Kiraly [aut],
   Michel Lang [aut] (<https://orcid.org/0000-0001-9754-0393>),
@@ -97,4 +96,4 @@ Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Andreas Bender [ctb] (<https://orcid.org/0000-0001-5628-8611>)
 Maintainer: Raphael Sonabend <raphael.sonabend.15@ucl.ac.uk>
 Repository: CRAN
-Date/Publication: 2020-03-20 12:50:02 UTC
+Date/Publication: 2020-04-16 16:10:02 UTC
