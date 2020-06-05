@@ -26,7 +26,8 @@
 #' \cite{mlr3proba}{burges_2010}
 #'
 #' @export
-LearnerSurvGBM = R6Class("LearnerSurvGBM", inherit = LearnerSurv,
+LearnerSurvGBM = R6Class("LearnerSurvGBM",
+  inherit = LearnerSurv,
   public = list(
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
@@ -77,6 +78,7 @@ LearnerSurvGBM = R6Class("LearnerSurvGBM", inherit = LearnerSurv,
     .train = function(task) {
 
       # hacky formula construction as gbm fails when "type" argument specified in Surv()
+
       tn = task$target_names
       lhs = sprintf("Surv(%s, %s)", tn[1L], tn[2L])
       f = formulate(lhs, task$feature_names, env = getNamespace("survival"))
@@ -99,7 +101,7 @@ LearnerSurvGBM = R6Class("LearnerSurvGBM", inherit = LearnerSurv,
       newdata = task$data()
 
       # predict linear predictor
-      lp = invoke(predict, self$model, newdata = newdata, .args = c(pv, type = "link"))
+      lp = mlr3misc::invoke(predict, self$model, newdata = newdata, .args = pv)
 
       # define WeightedDiscrete distr6 object from predicted survival function
       # x = rep(list(data = data.frame(x = fit$unique.death.times, cdf = 0)), task$nrow)

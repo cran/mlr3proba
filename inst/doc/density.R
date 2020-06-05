@@ -21,7 +21,7 @@ task$truth()[1:10]
 
 task_faithful = TaskDens$new(id = "eruptions", backend = datasets::faithful,
                              target = "eruptions")
-learner = lrn("dens.spline")
+learner = lrn("dens.kde")
 
 # train/test split 
 

@@ -8,7 +8,7 @@
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Nurul Ain Toha" />
 
@@ -116,9 +116,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -287,7 +284,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -345,7 +343,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">task_faithful =<span class="st"> </span>TaskDens<span class="op">$</span><span class="kw">new</span>(<span class="dt">id =</span> <span class="st">&quot;eruptions&quot;</span>, <span class="dt">backend =</span> datasets<span class="op">::</span>faithful,</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">                             <span class="dt">target =</span> <span class="st">&quot;eruptions&quot;</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">learner =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;dens.spline&quot;</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">learner =<span class="st"> </span><span class="kw">lrn</span>(<span class="st">&quot;dens.kde&quot;</span>)</a>
 <a class="sourceLine" id="cb2-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># train/test split </span></a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"></a>
@@ -356,7 +354,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-13" data-line-number="13"></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14">learner<span class="op">$</span><span class="kw">train</span>(task_faithful, <span class="dt">row_ids =</span> train_set)</a>
 <a class="sourceLine" id="cb2-15" data-line-number="15">learner<span class="op">$</span>model</a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; splineDens</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; Norm_KDE</span></a>
 <a class="sourceLine" id="cb2-17" data-line-number="17"><span class="kw">class</span>(learner<span class="op">$</span>model)</a>
 <a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; [1] &quot;Distribution&quot; &quot;R6&quot;</span></a>
 <a class="sourceLine" id="cb2-19" data-line-number="19"></a>
@@ -373,20 +371,20 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">prediction</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; &lt;PredictionDens&gt; for 55 observations:</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt;     row_id truth        pdf       cdf</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt;          3 3.333 0.06599954 0.3639503</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt;          8 3.600 0.13666034 0.3892788</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt;         11 1.833 0.50578997 0.0742322</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; ---                                  </span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt;        241 4.150 0.56150978 0.5805284</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt;        242 2.350 0.17665005 0.3017866</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt;        272 4.467 0.65884519 0.7745161</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt;     row_id truth       pdf</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt;          3 3.333 0.1094527</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt;          8 3.600 0.2057676</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt;         11 1.833 0.3015347</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; ---                       </span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt;        241 4.150 0.4651316</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt;        242 2.350 0.2310265</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt;        272 4.467 0.4800183</span></a>
 <a class="sourceLine" id="cb3-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co"># `pdf` is evaluated using the `log-loss`</span></a>
 <a class="sourceLine" id="cb3-13" data-line-number="13"></a>
 <a class="sourceLine" id="cb3-14" data-line-number="14">prediction<span class="op">$</span><span class="kw">score</span>()</a>
 <a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt; dens.logloss </span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;     1.033938</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;     1.145351</span></a></code></pre></div>
 </div>
 
 
