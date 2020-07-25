@@ -2,6 +2,8 @@
 #' @templateVar title Standard Error of Integrated Graf Score
 #' @templateVar fullname MeasureSurvGrafSE
 #'
+#' @aliases MeasureSurvBrierSE mlr_measures_surv.brier_se
+#'
 #' @description
 #' Calculates the standard error of [MeasureSurvGraf].
 #'
@@ -21,6 +23,7 @@ MeasureSurvGrafSE = R6::R6Class("MeasureSurvGrafSE",
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function(integrated = TRUE, times) {
+      warning('MeasureSurvGrafSE is now deprecated, use msr("surv.graf", se = TRUE) instead.')
       super$initialize(
         integrated = integrated,
         times = times,
@@ -29,19 +32,18 @@ MeasureSurvGrafSE = R6::R6Class("MeasureSurvGrafSE",
         minimize = TRUE,
         packages = "distr6",
         predict_type = "distr",
-        properties = character()
+        man = "mlr3proba::mlr_measures_surv.grafSE"
       )
     }
   ),
 
   private = list(
     .score = function(prediction, ...) {
-      integrated_se(
-        score = weighted_graf(
-          truth = prediction$truth,
-          distribution = prediction$distr,
-          times = self$times),
-        integrated = self$integrated)
+      integrated_se(score = weighted_survival_score("graf",
+                                                    truth = prediction$truth,
+                                                    distribution = prediction$distr,
+                                                    times = self$times),
+                    integrated = self$integrated)
     }
   )
 )

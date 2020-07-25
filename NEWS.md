@@ -1,3 +1,38 @@
+# mlr3proba 0.2.0
+
+### Added Functionality
+
+* `MeasureSurvCindex` added. Generalises all c-index measures with a fast C++ implementation
+* Akritas estimator added to [mlr3learners.proba repo](https://www.github.com/mlr3learners/mlr3learners.proba)
+* Added scoring rule `MeasureSurvSchmid`
+* Addd calibration measures `MeasureSurvCalibrationBeta` and `MeasureSurvCalibrationAlpha`
+* `surv.brier` alias added for `surv.graf`
+* `response` parameter added to `PipeOpCrankCompositor` and `crankcompositor` to now optionally fill `response` predict type with same values as `crank`
+* Added `PipeOpProbregrCompostior` and `compose_probregr` for composition to `distr` return type from (a) regression learner(s) predicting `response` and `se`
+* Added `PipeOpSurvAvg` and `surv_averager` pipeline for weighted model averaging of distr, lp, crank, and response predictions.
+
+### Deprecated Functionality
+
+* The following measures are deprecated use `MeasureSurvCindex` instead with following parameters: `MeasureSurvBeggC`, use defaults; `MeasureSurvHarrellC`, use defaults; `MeasureSurvUnoC`, use `weight_meth = 'G/2'`; `MeasureSurvGonenC`, use `weight_method = 'GH'`
+* `MeasureSurvGrafSE`, `MeasureSurvLoglossSE`, `MeasureSurvIntLoglossSE`, `MeasureSurvRMSESE`, `MeasureSurvMSESE`, and `MeasureSurvMAESE` all deprecated and will be deleted in v0.4.0. Use `msr("surv.graf", se = TRUE)` instead (for example).
+* Measures renamed such that `surv.nagelkR2` is now `surv.nagelk_r2`, analogously for all R2, AUC, TPR, and TNR measures. Old constructors will be deleted in v0.4.0.
+* Renamed `distrcompose` and `crankcompose` to `distr_compose` and `crank_compose`. Old ids will be deleted in v0.4.0.
+
+### Edited Functionality
+
+* Measures renamed such that `surv.nagelkR2` is now `surv.nagelk_r2`, analogously for all R2, AUC, TPR, and TNR measures. Old constructors will be deleted in v0.4.0.
+* `MeasureSurvGraf` and `MeasureSurvIntLogloss` now have much faster C++ implementation
+
+### Moved Functionality
+
+- `LearnerSurvGlmnet`, `LearnerSurvCVGlmnet`, `LearnerSurvXgboost` and `LearnerSurvRanger` have been moved to the [mlr3learners repo](https://www.github.com/mlr-org/mlr3learners)
+
+- `LearnerSurvGBM` has been moved to https://www.github.com/mlr3learners/mlr3learners.gbm
+
+- `LearnerSurvMboost`, `LearnerSurvGlmBoost`, `LearnerSurvGamboost`, `LearnerSurvBlackboost` have been moved to https://www.github.com/mlr3learners/mlr3learners.mboost
+
+  
+
 # mlr3proba 0.1.6
 
 * Early release due to backward compatibility error introduced by an upstream dependency

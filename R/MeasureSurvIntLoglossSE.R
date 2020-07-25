@@ -23,6 +23,7 @@ MeasureSurvIntLoglossSE = R6::R6Class("MeasureSurvIntLoglossSE",
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function(integrated = TRUE, times, eps = 1e-15) {
+      warning('MeasureSurvIntLoglossSE is now deprecated, use msr("surv.intlogloss", se = TRUE) instead.') # nolint
       super$initialize(
         integrated = integrated,
         times = times,
@@ -31,7 +32,7 @@ MeasureSurvIntLoglossSE = R6::R6Class("MeasureSurvIntLoglossSE",
         minimize = TRUE,
         packages = "distr6",
         predict_type = "distr",
-        properties = character()
+        man = "mlr3proba::mlr_measures_surv.intloglossSE"
       )
 
       assertNumeric(eps)
@@ -50,16 +51,15 @@ MeasureSurvIntLoglossSE = R6::R6Class("MeasureSurvIntLoglossSE",
     }
   ),
 
-  private = list(
-    .eps = numeric(0),
-    .score = function(prediction, ...) {
-      integrated_se(
-        score = weighted_logloss(
-          truth = prediction$truth,
-          distribution = prediction$distr,
-          times = self$times,
-          eps = self$eps),
-        integrated = self$integrated)
-    }
-  )
+    private = list(
+      .eps = numeric(0),
+      .score = function(prediction, ...) {
+        integrated_se(score = weighted_survival_score("intslogloss",
+                                                      truth = prediction$truth,
+                                                      distribution = prediction$distr,
+                                                      times = self$times,
+                                                      eps = self$eps),
+                      integrated = self$integrated)
+      }
+    )
 )

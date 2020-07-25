@@ -1,7 +1,12 @@
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib mlr3proba
+NULL
+
+# nolint start
+#' @rawNamespace import(mlr3, except = c(PredictionRegr, as.data.table.PredictionRegr, c.PredictionRegr))
 #' @import checkmate
 #' @import data.table
 #' @import distr6
-#' @import mlr3
 #' @import mlr3misc
 #' @import mlr3pipelines
 #' @import paradox
@@ -10,6 +15,7 @@
 #' @importFrom stats reformulate model.matrix model.frame sd
 #' @importFrom survival Surv
 "_PACKAGE"
+# nolint end
 
 register_mlr3 = function() {
 
@@ -25,12 +31,11 @@ register_mlr3 = function() {
     x$task_properties$surv = c("weights", "groups")
     x$learner_properties$surv = x$learner_properties$regr
     x$measure_properties$surv = x$measure_properties$regr
-    x$learner_predict_types$surv = list(
-      crank = c("crank", "lp", "distr", "response"),
-      distr = c("crank", "lp", "distr", "response"),
-      lp = c("crank", "lp", "distr", "response"),
-      response = c("crank", "lp", "distr", "response"))
-    x$default_measures$surv = "surv.harrellC"
+    x$learner_predict_types$surv = list(crank = c("crank","lp","distr","response"),
+                                        distr = c("crank","lp","distr","response"),
+                                        lp = c("crank","lp","distr","response"),
+                                        response = c("crank","lp","distr","response"))
+    x$default_measures$surv = "surv.cindex"
   }
 
   if (!grepl("dens", x$task_types[, "type"])) {
@@ -70,16 +75,7 @@ register_mlr3 = function() {
 
   x$add("surv.coxph", LearnerSurvCoxPH)
   x$add("surv.kaplan", LearnerSurvKaplan)
-  x$add("surv.glmnet", LearnerSurvGlmnet)
-  x$add("surv.cvglmnet", LearnerSurvCVGlmnet)
-  x$add("surv.glmboost", LearnerSurvGlmboost)
-  x$add("surv.gamboost", LearnerSurvGamboost)
-  x$add("surv.mboost", LearnerSurvMboost)
-  x$add("surv.blackboost", LearnerSurvBlackboost)
   x$add("surv.rpart", LearnerSurvRpart)
-  x$add("surv.ranger", LearnerSurvRanger)
-  x$add("surv.gbm", LearnerSurvGBM)
-  x$add("surv.xgboost", LearnerSurvXgboost)
 
   # measures
   x = utils::getFromNamespace("mlr_measures", ns = "mlr3")
@@ -90,28 +86,50 @@ register_mlr3 = function() {
 
   x$add("surv.graf", MeasureSurvGraf)
   x$add("surv.grafSE", MeasureSurvGrafSE)
+  x$add("surv.brier", MeasureSurvGraf)
+  x$add("surv.schmid", MeasureSurvSchmid)
   x$add("surv.logloss", MeasureSurvLogloss)
   x$add("surv.loglossSE", MeasureSurvLoglossSE)
   x$add("surv.intlogloss", MeasureSurvIntLogloss)
   x$add("surv.intloglossSE", MeasureSurvIntLoglossSE)
 
-  x$add("surv.unoC", MeasureSurvUnoC)
-  x$add("surv.harrellC", MeasureSurvHarrellC)
-  x$add("surv.gonenC", MeasureSurvGonenC)
-  x$add("surv.beggC", MeasureSurvBeggC)
+   x$add("surv.cindex", MeasureSurvCindex)
+   # deprecated
+   x$add("surv.unoC", MeasureSurvUnoC)
+   x$add("surv.harrellC", MeasureSurvHarrellC)
+   x$add("surv.gonenC", MeasureSurvGonenC)
+   x$add("surv.beggC", MeasureSurvBeggC)
 
+  x$add("surv.calib_beta", MeasureSurvCalibrationBeta)
+  x$add("surv.calib_alpha", MeasureSurvCalibrationAlpha)
+
+  x$add("surv.nagelk_r2", MeasureSurvNagelkR2)
+  x$add("surv.oquigley_r2", MeasureSurvOQuigleyR2)
+  x$add("surv.xu_r2", MeasureSurvXuR2)
+  # deprecated - deleted in next release
   x$add("surv.nagelkR2", MeasureSurvNagelkR2)
   x$add("surv.oquigleyR2", MeasureSurvOQuigleyR2)
   x$add("surv.xuR2", MeasureSurvXuR2)
 
+  x$add("surv.chambless_auc", MeasureSurvChamblessAUC)
+  x$add("surv.hung_auc", MeasureSurvHungAUC)
+  x$add("surv.uno_auc", MeasureSurvUnoAUC)
+  x$add("surv.song_auc", MeasureSurvSongAUC)
+  # deprecated - deleted in next release
   x$add("surv.chamblessAUC", MeasureSurvChamblessAUC)
   x$add("surv.hungAUC", MeasureSurvHungAUC)
   x$add("surv.unoAUC", MeasureSurvUnoAUC)
   x$add("surv.songAUC", MeasureSurvSongAUC)
 
+  x$add("surv.uno_tpr", MeasureSurvUnoTPR)
+  x$add("surv.song_tpr", MeasureSurvSongTPR)
+  # deprecated - deleted in next release
   x$add("surv.unoTPR", MeasureSurvUnoTPR)
   x$add("surv.songTPR", MeasureSurvSongTPR)
 
+  x$add("surv.uno_tnr", MeasureSurvUnoTNR)
+  x$add("surv.song_tnr", MeasureSurvSongTNR)
+  # deprecated - deleted in next release
   x$add("surv.unoTNR", MeasureSurvUnoTNR)
   x$add("surv.songTNR", MeasureSurvSongTNR)
 
@@ -124,25 +142,35 @@ register_mlr3 = function() {
 }
 register_mlr3pipelines = function() {
   x = utils::getFromNamespace("mlr_pipeops", ns = "mlr3pipelines")
+
+  # deprecated
   x$add("distrcompose", PipeOpDistrCompositor)
   x$add("crankcompose", PipeOpCrankCompositor)
+
+  x$add("survavg", PipeOpSurvAvg)
+  x$add("distr_compose", PipeOpDistrCompositor)
+  x$add("crank_compose", PipeOpCrankCompositor)
+  x$add("probregr_compose", PipeOpProbregrCompositor)
 }
 
-.onLoad = function(libname, pkgname) {
+.onLoad = function(libname, pkgname) { # nolint
   register_mlr3()
   register_mlr3pipelines()
   setHook(packageEvent("mlr3", "onLoad"), function(...) register_mlr3(), action = "append")
-  setHook(packageEvent("mlr3pipelines", "onLoad"), function(...) register_mlr3pipelines(), action = "append")
+  setHook(packageEvent("mlr3pipelines", "onLoad"), function(...) register_mlr3pipelines(),
+          action = "append")
 }
 
-.onUnload = function(libpath) {
+.onUnload = function(libpath) { # nolint
   event = packageEvent("mlr3", "onLoad")
   hooks = getHook(event)
   pkgname = vapply(hooks[-1], function(x) environment(x)$pkgname, NA_character_)
   setHook(event, hooks[pkgname != "mlr3proba"], action = "replace")
 
-  event = packageEvent("mlr3pipelines", "onLoad")
-  hooks = getHook(event)
-  pkgname = vapply(hooks[-1], function(x) environment(x)$pkgname, NA_character_)
-  setHook(event, hooks[pkgname != "mlr3proba"], action = "replace")
+   event = packageEvent("mlr3pipelines", "onLoad")
+   hooks = getHook(event)
+   pkgname = vapply(hooks[-1], function(x) environment(x)$pkgname, NA_character_)
+   setHook(event, hooks[pkgname != "mlr3proba"], action = "replace")
+
+   library.dynam.unload("mlr3proba", libpath)
 }

@@ -9,8 +9,9 @@ Uses a predicted \code{distr} in a \link{PredictionSurv} to estimate (or 'compos
 }
 \section{Dictionary}{
 
-This \link[mlr3pipelines:PipeOp]{PipeOp} can be instantiated via the \link[mlr3misc:Dictionary]{dictionary}
-\link[mlr3pipelines:mlr_pipeops]{mlr3pipelines::mlr_pipeops} or with the associated sugar function \code{\link[mlr3pipelines:po]{mlr3pipelines::po()}}:\preformatted{PipeOpCrankCompositor$new()
+This \link[mlr3pipelines:PipeOp]{PipeOp} can be instantiated via the
+\link[mlr3misc:Dictionary]{dictionary} \link[mlr3pipelines:mlr_pipeops]{mlr3pipelines::mlr_pipeops} or with the associated sugar
+function \code{\link[mlr3pipelines:po]{mlr3pipelines::po()}}:\preformatted{PipeOpCrankCompositor$new()
 mlr_pipeops$get("crankcompose")
 po("crankcompose")
 }
@@ -42,13 +43,18 @@ One of \code{median}, \code{mode}, or \code{mean} corresponding to the respectiv
 survival distribution. Note that for models with a proportional hazards form, the ranking
 implied by \code{mean} and \code{median} will be identical (but not the value of \code{crank} itself).
 Default is \code{mean}.
+\item \code{which} :: \code{numeric(1)}\cr
+If \code{method = "mode"} then specifies which mode to use if multi-modal, default is the first.
+\item \code{response} :: \code{logical(1)}\cr
+If \code{TRUE} then the \code{response} predict type is estimated with the same values as \code{crank}.
 }
 }
 
 \section{Internals}{
 
-The \code{median}, \code{mode}, or \code{mean} will use analytical expressions if possible but if not they are calculated
-using \link[distr6:median.Distribution]{distr6::median.Distribution}, \link[distr6:mode]{distr6::mode}, or \link[distr6:mean.Distribution]{distr6::mean.Distribution} respectively.
+The \code{median}, \code{mode}, or \code{mean} will use analytical expressions if possible but if not they are
+calculated using \link[distr6:median.Distribution]{distr6::median.Distribution}, \link[distr6:mode]{distr6::mode}, or \link[distr6:mean.Distribution]{distr6::mean.Distribution}
+respectively.
 }
 
 \section{Fields}{
@@ -62,6 +68,7 @@ Only fields inherited from \link[mlr3pipelines:PipeOp]{PipeOp}.
 }
 
 \examples{
+\dontrun{
 library(mlr3)
 library(mlr3pipelines)
 set.seed(1)
@@ -74,28 +81,27 @@ learn = lrn("surv.coxph")$train(task)$predict(task)
 poc = po("crankcompose", param_vals = list(method = "mean"))
 poc$predict(list(learn))
 
-# Examples not run to save run-time.
-\dontrun{
 # Method 2 - Create a graph manually
 gr = Graph$new()$
-  add_pipeop(po("learner", lrn("surv.ranger")))$
+  add_pipeop(po("learner", lrn("surv.coxph")))$
   add_pipeop(po("crankcompose"))$
-  add_edge("surv.ranger", "crankcompose")
+  add_edge("surv.coxph", "crankcompose")
 gr$train(task)
 gr$predict(task)
 
 # Method 3 - Syntactic sugar: Wrap the learner in a graph
-ranger.crank = crankcompositor(
-  learner = lrn("surv.ranger"),
+cox.crank = crankcompositor(
+  learner = lrn("surv.coxph"),
   method = "median")
-resample(task, ranger.crank, rsmp("cv", folds = 2))$predictions()
+resample(task, cox.crank, rsmp("cv", folds = 2))$predictions()
 }
 }
 \seealso{
 \link[mlr3pipelines:PipeOp]{mlr3pipelines::PipeOp} and \link{crankcompositor}
 
 Other survival compositors: 
-\code{\link{PipeOpDistrCompositor}}
+\code{\link{PipeOpDistrCompositor}},
+\code{\link{PipeOpProbregrCompositor}}
 }
 \concept{survival compositors}
 \section{Super class}{
@@ -149,7 +155,8 @@ otherwise be set during construction.}
 \if{latex}{\out{\hypertarget{method-train_internal}{}}}
 \subsection{Method \code{train_internal()}}{
 train_internal
-Internal \code{train} function, will be moved to \code{private} in a near-future update, should be ignored.
+Internal \code{train} function, will be moved to \code{private} in a near-future update, should be
+ignored.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipeOpCrankCompositor$train_internal(inputs)}\if{html}{\out{</div>}}
 }
@@ -167,7 +174,8 @@ Internal \code{train} function, will be moved to \code{private} in a near-future
 \if{latex}{\out{\hypertarget{method-predict_internal}{}}}
 \subsection{Method \code{predict_internal()}}{
 predict_internal
-Internal \code{predict} function, will be moved to \code{private} in a near-future update, should be ignored.
+Internal \code{predict} function, will be moved to \code{private} in a near-future update, should be
+ignored.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipeOpCrankCompositor$predict_internal(inputs)}\if{html}{\out{</div>}}
 }

@@ -22,13 +22,16 @@ MeasureSurvBeggC = R6Class("MeasureSurvBeggC",
   public = list(
     #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
+      warning("This is now deprecated, use MeasureSurvCindex instead with the
+              function defaults.")
       super$initialize(
         id = "surv.beggC",
         range = 0:1,
         minimize = FALSE,
         packages = "survAUC",
         predict_type = "lp",
-        properties = c("requires_learner", "requires_task", "requires_train_set")
+        properties = c("requires_learner", "requires_task", "requires_train_set"),
+        man = "mlr3proba::mlr_measures_surv.beggC"
       )
     }
   ),

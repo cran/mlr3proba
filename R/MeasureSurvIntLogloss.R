@@ -7,7 +7,7 @@
 #'
 #' For an individual who dies at time \eqn{t}, with predicted Survival function, \eqn{S}, the
 #' probabilistic log loss at time \eqn{t^*}{t*} is given by
-#' \deqn{L(S,t|t^*) = - [log(1 - S(t^*))I(t \le t^*, \delta = 1)(1/G(t))] - [log(S(t^*))I(t > t^*)(1/G(t^*))]}{L(S,t|t*) = - [log(1 - S(t*))I(t \le t*, \delta = 1)(1/G(t))] - [log(S(t*))I(t > t*)(1/G(t*))]}
+#' \deqn{L(S,t|t^*) = - [log(1 - S(t^*))I(t \le t^*, \delta = 1)(1/G(t))] - [log(S(t^*))I(t > t^*)(1/G(t^*))]}{L(S,t|t*) = - [log(1 - S(t*))I(t \le t*, \delta = 1)(1/G(t))] - [log(S(t*))I(t > t*)(1/G(t*))]} # nolint
 #' where \eqn{G} is the Kaplan-Meier estimate of the censoring distribution.
 #'
 #' @template measure_integrated
@@ -16,6 +16,7 @@
 #' @template param_eps
 #' @template field_eps
 #' @template param_method
+#' @template param_se
 #'
 #' @references
 #' \cite{mlr3proba}{graf_1999}
@@ -28,7 +29,7 @@ MeasureSurvIntLogloss = R6::R6Class("MeasureSurvIntLogloss",
   public = list(
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
-    initialize = function(integrated = TRUE, times, eps = 1e-15, method = 2) {
+    initialize = function(integrated = TRUE, times, eps = 1e-15, method = 2, se = FALSE) {
       super$initialize(
         integrated = integrated,
         times = times,
@@ -38,11 +39,11 @@ MeasureSurvIntLogloss = R6::R6Class("MeasureSurvIntLogloss",
         minimize = TRUE,
         packages = "distr6",
         predict_type = "distr",
-        properties = character()
+        man = "mlr3proba::mlr_measures_surv.intlogloss",
       )
 
-      assertNumeric(eps)
-      private$.eps = eps
+      private$.eps = assertNumeric(eps)
+      private$.se = assertFlag(se)
     }
   ),
 
@@ -54,20 +55,43 @@ MeasureSurvIntLogloss = R6::R6Class("MeasureSurvIntLogloss",
         assertNumeric(eps)
         private$.eps = eps
       }
+    },
+
+    #' @field se `(logical(1))` \cr
+    #' If `TRUE` returns the standard error of the measure.
+    se = function(x) {
+      if (!missing(x)) {
+        private$.se = assertFlag(x)
+      } else {
+        return(private$.se)
+      }
     }
   ),
 
   private = list(
     .eps = numeric(0),
+    .se = FALSE,
     .score = function(prediction, ...) {
-      integrated_score(
-        score = weighted_logloss(
-          truth = prediction$truth,
-          distribution = prediction$distr,
-          times = self$times,
-          eps = self$eps),
-        integrated = self$integrated,
-        method = self$method)
+      if (self$se) {
+        return(
+          integrated_score(score = weighted_survival_score("intslogloss",
+                                                           truth = prediction$truth,
+                                                           distribution = prediction$distr,
+                                                           times = self$times,
+                                                           eps = self$eps),
+                           integrated = self$integrated,
+                           method = self$method)
+        )
+      } else {
+        return(
+          integrated_se(score = weighted_survival_score("intslogloss",
+                                                        truth = prediction$truth,
+                                                        distribution = prediction$distr,
+                                                        times = self$times,
+                                                        eps = self$eps),
+                        integrated = self$integrated)
+        )
+      }
     }
   )
 )

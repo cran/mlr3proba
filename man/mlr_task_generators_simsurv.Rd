@@ -7,7 +7,8 @@
 \description{
 A \link[mlr3:TaskGenerator]{mlr3::TaskGenerator} calling \code{\link[simsurv:simsurv]{simsurv::simsurv()}} from package \CRANpkg{simsurv}.
 
-This generator currently only exposes a small subset of the flexibility of \CRANpkg{simsurv}, and just creates a small data set with the following numerical covariates:
+This generator currently only exposes a small subset of the flexibility of \CRANpkg{simsurv},
+and just creates a small data set with the following numerical covariates:
 \itemize{
 \item \code{treatment}: Bernoulli distributed with log hazard ratio \code{-0.5}.
 \item \code{height}: Normally distributed with log hazard ratio \code{1}.
@@ -44,7 +45,9 @@ task$head()
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="TaskGenerator" data-id="format">}\href{../../mlr3/html/TaskGenerator.html#method-format}{\code{mlr3::TaskGenerator$format()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="TaskGenerator" data-id="generate">}\href{../../mlr3/html/TaskGenerator.html#method-generate}{\code{mlr3::TaskGenerator$generate()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="TaskGenerator" data-id="print">}\href{../../mlr3/html/TaskGenerator.html#method-print}{\code{mlr3::TaskGenerator$print()}}\out{</span>}
 }
 \out{</details>}
 }

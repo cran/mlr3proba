@@ -17,6 +17,7 @@ head(as.data.table(p))
 }
 \seealso{
 Other Prediction: 
+\code{\link{PredictionRegr}},
 \code{\link{PredictionSurv}}
 }
 \concept{Prediction}
@@ -82,12 +83,12 @@ Row ids of the predicted observations, i.e. the row ids of the test set.}
 True (observed) response.}
 
 \item{\code{pdf}}{(\code{numeric()})\cr
-Numeric vector of estimated probability density function, evaluated at 'target' column of test set.
-One element for each observation in the test set.}
+Numeric vector of estimated probability density function, evaluated at 'target' column of
+test set. One element for each observation in the test set.}
 
 \item{\code{cdf}}{(\code{numeric()})\cr
-Numeric vector of estimated cumulative distribution function, evaluated at 'target' column of test set.
-One element for each observation in the test set.}
+Numeric vector of estimated cumulative distribution function, evaluated at 'target' column
+of test set. One element for each observation in the test set.}
 }
 \if{html}{\out{</div>}}
 }

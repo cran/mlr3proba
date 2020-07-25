@@ -21,16 +21,19 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH",
         id = "surv.coxph",
         param_set = ParamSet$new(
           params = list(
-            ParamFct$new(id = "ties", default = "efron", levels = c("efron", "breslow", "exact"), tags = "train"),
+            ParamFct$new(id = "ties", default = "efron", levels = c("efron", "breslow", "exact"),
+                         tags = "train"),
             ParamLgl$new(id = "singular.ok", default = TRUE, tags = "train"),
-            ParamFct$new(id = "type", default = "efron", levels = c("efron", "aalen", "kalbfleisch-prentice"), tags = "predict"),
+            ParamFct$new(id = "type", default = "efron",
+                         levels = c("efron", "aalen", "kalbfleisch-prentice"), tags = "predict"),
             ParamInt$new(id = "stype", default = 2L, lower = 1L, upper = 2L, tags = "predict")
           )
         ),
         predict_types = c("distr", "crank", "lp"),
         feature_types = c("logical", "integer", "numeric", "factor"),
         properties = "weights",
-        packages = c("survival", "distr6")
+        packages = c("survival", "distr6"),
+        man = "mlr3proba::mlr_learners_surv.coxph"
       )
     }
   ),
@@ -62,10 +65,11 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH",
       pv = self$param_set$get_values(tags = "predict")
 
       # Get predicted values
-      fit = invoke(survival::survfit, formula = self$model, newdata = newdata, se.fit = FALSE, .args = pv)
+      fit = invoke(survival::survfit, formula = self$model, newdata = newdata, se.fit = FALSE,
+                   .args = pv)
 
       # define WeightedDiscrete distr6 object from predicted survival function
-      x = rep(list(data = data.frame(x = fit$time, cdf = 0)), task$nrow)
+      x = rep(list(list(x = fit$time, cdf = 0)), task$nrow)
       for (i in 1:task$nrow) {
         x[[i]]$cdf = 1 - fit$surv[, i]
       }

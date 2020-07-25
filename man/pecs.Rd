@@ -29,7 +29,8 @@ pecs(x, measure = c("graf", "logloss"), times, n, eps = 1e-15, ...)
 Either \code{"graf"} for \link{MeasureSurvGraf}, or \code{"logloss"} for \link{MeasureSurvIntLogloss}}
 
 \item{times}{(\code{numeric()}) \cr
-If provided then either a vector of time-points to evaluate \code{measure} or a range of time-points.}
+If provided then either a vector of time-points to evaluate \code{measure} or a range of
+time-points.}
 
 \item{n}{(\code{integer()}) \cr
 If \code{times} is missing or given as a range, then \code{n} provide number of time-points to evaluate
@@ -76,7 +77,7 @@ x = pecs(p)
 x$data
 
 # Prediction Error Curves for fitted learners
-learns = lrns(c("surv.kaplan", "surv.coxph", "surv.ranger"))
+learns = lrns(c("surv.kaplan", "surv.coxph"))
 lapply(learns, function(x) x$train(task))
 pecs(learns, task = task, measure = "logloss", times = c(20, 90), n = 10)
 }

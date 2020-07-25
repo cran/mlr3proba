@@ -1,5 +1,3 @@
-context("dens.hist")
-
 test_that("autotest", {
   set.seed(1)
   learner = lrn("dens.hist")
@@ -14,7 +12,7 @@ a = graphics::hist(x = data$A, include.lowest = TRUE, plot = TRUE, right = FALSE
 task = TaskDens$new(id = "a", data, target = "A")
 lrn = lrn("dens.hist", breaks = 5)
 p = lrn$train(task)
-dist = p$model$distr
+dist = p$model$dist
 
 test_that("pdf", {
   expect_equal(dist$pdf(0), 0.5)

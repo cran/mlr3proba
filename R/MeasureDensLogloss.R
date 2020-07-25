@@ -10,9 +10,9 @@
 #' @description
 #' Calculates the cross-entropy, or logarithmic (log), loss.
 #'
-#' The logloss, in the context of probabilistic predictions, is defined as the negative log probability
-#' density function, \eqn{f}, evaluated at the observed value, \eqn{y},
-#' \deqn{L(f, y) = -log(f(y))}
+#' The logloss, in the context of probabilistic predictions, is defined as the negative log
+#' probability density function, \eqn{f}, evaluated at the observed value, \eqn{y},
+#' \deqn{L(f, y) = -\log(f(y))}{L(f, y) = -log(f(y))}
 #'
 #' @family Density estimation measures
 #' @export
@@ -26,7 +26,8 @@ MeasureDensLogloss = R6::R6Class("MeasureDensLogloss",
         id = "dens.logloss",
         range = c(0, Inf),
         minimize = TRUE,
-        predict_type = "pdf"
+        predict_type = "pdf",
+        man = "mlr3proba::mlr_measures_dens.logloss"
       )
 
       assertNumeric(eps)

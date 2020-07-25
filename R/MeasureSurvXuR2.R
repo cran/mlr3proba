@@ -20,12 +20,13 @@ MeasureSurvXuR2 = R6Class("MeasureSurvXuR2",
     #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       super$initialize(
-        id = "surv.xuR2",
+        id = "surv.xu_r2",
         range = 0:1,
         minimize = FALSE,
         packages = "survAUC",
         predict_type = "lp",
-        properties = c("requires_task", "requires_train_set")
+        properties = c("requires_task", "requires_train_set"),
+        man = "mlr3proba::mlr_measures_surv.xu_r2"
       )
     }
   ),
@@ -34,7 +35,7 @@ MeasureSurvXuR2 = R6Class("MeasureSurvXuR2",
     .score = function(prediction, task, train_set, ...) {
       surv_train = task$truth(train_set)
 
-      survAUC::XO(surv_train, prediction$lp, rep(0, length(prediction$lp)))
+      survAUC::XO(surv_train, prediction$lp, numeric(length(prediction$lp)))
     }
   )
 )

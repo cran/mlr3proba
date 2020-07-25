@@ -17,11 +17,13 @@ MeasureSurvMAESE = R6::R6Class("MeasureSurvMAESE",
   public = list(
     #' @description Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
+      warning('MeasureSurvMAESE is now deprecated, use msr("surv.mae", se = TRUE) instead.')
       super$initialize(
         id = "surv.maeSE",
         range = c(0, Inf),
         minimize = TRUE,
-        predict_type = "response"
+        predict_type = "response",
+        man = "mlr3proba::mlr_measures_surv.maeSE"
       )
     }
   ),

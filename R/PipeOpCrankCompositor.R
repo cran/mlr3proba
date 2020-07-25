@@ -5,8 +5,9 @@
 #' Uses a predicted `distr` in a [PredictionSurv] to estimate (or 'compose') a `crank` prediction.
 #'
 #' @section Dictionary:
-#' This [PipeOp][mlr3pipelines::PipeOp] can be instantiated via the [dictionary][mlr3misc::Dictionary]
-#' [mlr3pipelines::mlr_pipeops] or with the associated sugar function [mlr3pipelines::po()]:
+#' This [PipeOp][mlr3pipelines::PipeOp] can be instantiated via the
+#' [dictionary][mlr3misc::Dictionary] [mlr3pipelines::mlr_pipeops] or with the associated sugar
+#' function [mlr3pipelines::po()]:
 #' ```
 #' PipeOpCrankCompositor$new()
 #' mlr_pipeops$get("crankcompose")
@@ -33,10 +34,15 @@
 #'    survival distribution. Note that for models with a proportional hazards form, the ranking
 #'    implied by `mean` and `median` will be identical (but not the value of `crank` itself).
 #'    Default is `mean`.
+#' * `which` :: `numeric(1)`\cr
+#'    If `method = "mode"` then specifies which mode to use if multi-modal, default is the first.
+#' * `response` :: `logical(1)`\cr
+#'    If `TRUE` then the `response` predict type is estimated with the same values as `crank`.
 #'
 #' @section Internals:
-#' The `median`, `mode`, or `mean` will use analytical expressions if possible but if not they are calculated
-#' using [distr6::median.Distribution], [distr6::mode], or [distr6::mean.Distribution] respectively.
+#' The `median`, `mode`, or `mean` will use analytical expressions if possible but if not they are
+#' calculated using [distr6::median.Distribution], [distr6::mode], or [distr6::mean.Distribution]
+#' respectively.
 #'
 #' @section Fields:
 #' Only fields inherited from [PipeOp][mlr3pipelines::PipeOp].
@@ -48,6 +54,7 @@
 #' @export
 #' @family survival compositors
 #' @examples
+#' \dontrun{
 #' library(mlr3)
 #' library(mlr3pipelines)
 #' set.seed(1)
@@ -60,24 +67,22 @@
 #' poc = po("crankcompose", param_vals = list(method = "mean"))
 #' poc$predict(list(learn))
 #'
-#' # Examples not run to save run-time.
-#' \dontrun{
 #' # Method 2 - Create a graph manually
 #' gr = Graph$new()$
-#'   add_pipeop(po("learner", lrn("surv.ranger")))$
+#'   add_pipeop(po("learner", lrn("surv.coxph")))$
 #'   add_pipeop(po("crankcompose"))$
-#'   add_edge("surv.ranger", "crankcompose")
+#'   add_edge("surv.coxph", "crankcompose")
 #' gr$train(task)
 #' gr$predict(task)
 #'
 #' # Method 3 - Syntactic sugar: Wrap the learner in a graph
-#' ranger.crank = crankcompositor(
-#'   learner = lrn("surv.ranger"),
+#' cox.crank = crankcompositor(
+#'   learner = lrn("surv.coxph"),
 #'   method = "median")
-#' resample(task, ranger.crank, rsmp("cv", folds = 2))$predictions()
+#' resample(task, cox.crank, rsmp("cv", folds = 2))$predictions()
 #' }
 PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
-  inherit = PipeOp,
+  inherit = mlr3pipelines::PipeOp,
   public = list(
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
@@ -88,19 +93,27 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
     #'   List of hyperparameter settings, overwriting the hyperparameter settings that would
     #'   otherwise be set during construction.
     initialize = function(id = "crankcompose", param_vals = list(method = "mean")) {
+      ps = ParamSet$new(params = list(
+        ParamFct$new("method", default = "mean", levels = c("mean", "median", "mode"),
+                     tags = "predict"),
+        ParamInt$new("which", default = 1, lower = 1, tags = "predict"),
+        ParamLgl$new("response", default = FALSE, tags = "predict")
+      ))
+      ps$add_dep("which", "method", CondEqual$new("mode"))
+
       super$initialize(
         id = id,
-        param_set = ParamSet$new(params = list(
-          ParamFct$new("method", default = "mean", levels = c("mean", "median", "mode"), tags = c("predict"))
-        )),
+        param_set = ps,
         param_vals = param_vals,
         input = data.table(name = "input", train = "NULL", predict = "PredictionSurv"),
         output = data.table(name = "output", train = "NULL", predict = "PredictionSurv"),
-        packages = "distr6")
+        packages = "distr6"
+        )
     },
 
     #' @description train_internal
-    #' Internal `train` function, will be moved to `private` in a near-future update, should be ignored.
+    #' Internal `train` function, will be moved to `private` in a near-future update, should be
+    #' ignored.
     #' @param inputs
     #' Ignore.
     train_internal = function(inputs) {
@@ -109,7 +122,8 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
     },
 
     #' @description predict_internal
-    #' Internal `predict` function, will be moved to `private` in a near-future update, should be ignored.
+    #' Internal `predict` function, will be moved to `private` in a near-future update, should be
+    #' ignored.
     #' @param inputs
     #' Ignore.
     predict_internal = function(inputs) {
@@ -121,19 +135,26 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
       if (length(method) == 0) method = "mean"
       crank = as.numeric(switch(method,
         median = inpred$distr$median(),
-        mode = inpred$distr$mode(),
+        mode = inpred$distr$mode(self$param_set$values$which),
         inpred$distr$mean()
       ))
 
-      if (length(inpred$lp) == 0) {
-        lp = NULL
-      } else {
+      if (length(inpred$lp)) {
         lp = inpred$lp
+      } else {
+        lp = NULL
+      }
+
+      response = self$param_set$values$response
+      if (!is.null(response) && response) {
+        response = crank
+      } else {
+        response = NULL
       }
 
       return(list(PredictionSurv$new(
         row_ids = inpred$row_ids, truth = inpred$truth, crank = crank,
-        distr = inpred$distr, lp = lp)))
+        distr = inpred$distr, lp = lp, response = response)))
     }
   )
 
@@ -160,7 +181,8 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
   #     else
   #       lp = inpred$lp
   #
-  #     return(list(PredictionSurv$new(row_ids = inpred$row_ids, truth = inpred$truth, crank = crank,
+  #     return(list(PredictionSurv$new(row_ids = inpred$row_ids, truth = inpred$truth,
+  #     crank = crank,
   #                                    distr = inpred$distr, lp = lp)))
   #   }
   # )
