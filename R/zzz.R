@@ -3,12 +3,11 @@
 NULL
 
 # nolint start
-#' @rawNamespace import(mlr3, except = c(PredictionRegr, as.data.table.PredictionRegr, c.PredictionRegr))
 #' @import checkmate
 #' @import data.table
 #' @import distr6
+#' @import mlr3
 #' @import mlr3misc
-#' @import mlr3pipelines
 #' @import paradox
 #' @importFrom R6 R6Class
 #' @importFrom utils data head tail
@@ -60,6 +59,10 @@ register_mlr3 = function() {
   x$add("faithful", load_faithful)
   x$add("rats", load_rats)
   x$add("lung", load_lung)
+  x$add("actg", load_actg)
+  x$add("gbcs", load_gbcs)
+  x$add("grace", load_grace)
+  x$add("whas", load_whas)
   x$add("unemployment", load_unemployment)
 
   # generators
@@ -147,15 +150,32 @@ register_mlr3pipelines = function() {
   x$add("distrcompose", PipeOpDistrCompositor)
   x$add("crankcompose", PipeOpCrankCompositor)
 
+  x$add("trafotask_regrsurv", PipeOpTaskRegrSurv)
+  x$add("trafotask_survregr", PipeOpTaskSurvRegr)
+  x$add("trafopred_regrsurv", PipeOpPredRegrSurv)
+  x$add("trafopred_survregr", PipeOpPredSurvRegr)
+
+  x$add("compose_distr", PipeOpDistrCompositor)
+  x$add("compose_crank", PipeOpCrankCompositor)
+  x$add("compose_probregr", PipeOpProbregrCompositor)
+
   x$add("survavg", PipeOpSurvAvg)
-  x$add("distr_compose", PipeOpDistrCompositor)
-  x$add("crank_compose", PipeOpCrankCompositor)
-  x$add("probregr_compose", PipeOpProbregrCompositor)
+
+  x = utils::getFromNamespace("mlr_graphs", ns = "mlr3pipelines")
+  x$add("distrcompositor", pipeline_distrcompositor)
+  x$add("crankcompositor", pipeline_crankcompositor)
+  x$add("probregrcompositor", pipeline_probregrcompositor)
+  x$add("survaverager", pipeline_survaverager)
+  x$add("survbagging", pipeline_survbagging)
+  x$add("survtoregr", pipeline_survtoregr)
 }
 
 .onLoad = function(libname, pkgname) { # nolint
   register_mlr3()
-  register_mlr3pipelines()
+  if (requireNamespace("mlr3pipelines", quietly = TRUE)) {
+    register_mlr3pipelines()
+  }
+
   setHook(packageEvent("mlr3", "onLoad"), function(...) register_mlr3(), action = "append")
   setHook(packageEvent("mlr3pipelines", "onLoad"), function(...) register_mlr3pipelines(),
           action = "append")

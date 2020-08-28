@@ -1,5 +1,6 @@
 #' @title PipeOpCrankCompositor
 #' @aliases mlr_pipeops_crankcompose
+#' @template param_pipelines
 #'
 #' @description
 #' Uses a predicted `distr` in a [PredictionSurv] to estimate (or 'compose') a `crank` prediction.
@@ -38,66 +39,43 @@
 #'    If `method = "mode"` then specifies which mode to use if multi-modal, default is the first.
 #' * `response` :: `logical(1)`\cr
 #'    If `TRUE` then the `response` predict type is estimated with the same values as `crank`.
+#' * `overwrite` :: `logical(1)` \cr
+#'    If `FALSE` (default) then if the "pred" input already has a `crank`, the compositor only
+#'    composes a `response` type if `response = TRUE` and does not already exist. If `TRUE` then
+#'    both the `crank` and `response` are overwritten.
 #'
 #' @section Internals:
 #' The `median`, `mode`, or `mean` will use analytical expressions if possible but if not they are
 #' calculated using [distr6::median.Distribution], [distr6::mode], or [distr6::mean.Distribution]
 #' respectively.
 #'
-#' @section Fields:
-#' Only fields inherited from [PipeOp][mlr3pipelines::PipeOp].
-#'
-#' @section Methods:
-#' Only fields inherited from [PipeOp][mlr3pipelines::PipeOp].
-#'
-#' @seealso [mlr3pipelines::PipeOp] and [crankcompositor]
-#' @export
+#' @seealso [pipeline_crankcompositor]
 #' @family survival compositors
 #' @examples
 #' \dontrun{
 #' library(mlr3)
 #' library(mlr3pipelines)
 #' set.seed(1)
+#' task = tgen("simsurv")$generate(20)
 #'
-#' # Three methods to predict a `crank` from `surv.rpart`
-#' task = tgen("simsurv")$generate(30)
-#'
-#' # Method 1 - Train and predict separately then compose
 #' learn = lrn("surv.coxph")$train(task)$predict(task)
 #' poc = po("crankcompose", param_vals = list(method = "mean"))
-#' poc$predict(list(learn))
-#'
-#' # Method 2 - Create a graph manually
-#' gr = Graph$new()$
-#'   add_pipeop(po("learner", lrn("surv.coxph")))$
-#'   add_pipeop(po("crankcompose"))$
-#'   add_edge("surv.coxph", "crankcompose")
-#' gr$train(task)
-#' gr$predict(task)
-#'
-#' # Method 3 - Syntactic sugar: Wrap the learner in a graph
-#' cox.crank = crankcompositor(
-#'   learner = lrn("surv.coxph"),
-#'   method = "median")
-#' resample(task, cox.crank, rsmp("cv", folds = 2))$predictions()
+#' poc$predict(list(learn))[[1]]
 #' }
+#' @export
 PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
   inherit = mlr3pipelines::PipeOp,
   public = list(
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
-    #'
-    #' @param id (`character(1)`)\cr
-    #'   Identifier of the resulting  object.
-    #' @param param_vals (`list()`)\cr
-    #'   List of hyperparameter settings, overwriting the hyperparameter settings that would
-    #'   otherwise be set during construction.
-    initialize = function(id = "crankcompose", param_vals = list(method = "mean")) {
+    initialize = function(id = "compose_crank", param_vals = list(method = "mean", response = FALSE,
+                                                                  overwrite = FALSE)) {
       ps = ParamSet$new(params = list(
         ParamFct$new("method", default = "mean", levels = c("mean", "median", "mode"),
                      tags = "predict"),
         ParamInt$new("which", default = 1, lower = 1, tags = "predict"),
-        ParamLgl$new("response", default = FALSE, tags = "predict")
+        ParamLgl$new("response", default = FALSE, tags = "predict"),
+        ParamLgl$new("overwrite", default = FALSE, tags = "predict")
       ))
       ps$add_dep("which", "method", CondEqual$new("mode"))
 
@@ -109,81 +87,68 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
         output = data.table(name = "output", train = "NULL", predict = "PredictionSurv"),
         packages = "distr6"
         )
-    },
+    }
+  ),
 
-    #' @description train_internal
-    #' Internal `train` function, will be moved to `private` in a near-future update, should be
-    #' ignored.
-    #' @param inputs
-    #' Ignore.
-    train_internal = function(inputs) {
+  private = list(
+    .train = function(inputs) {
       self$state = list()
       list(NULL)
     },
 
-    #' @description predict_internal
-    #' Internal `predict` function, will be moved to `private` in a near-future update, should be
-    #' ignored.
-    #' @param inputs
-    #' Ignore.
-    predict_internal = function(inputs) {
+    .predict = function(inputs) {
 
       inpred = inputs[[1]]
 
-      assert("distr" %in% inpred$predict_types)
-      method = self$param_set$values$method
-      if (length(method) == 0) method = "mean"
-      crank = as.numeric(switch(method,
-        median = inpred$distr$median(),
-        mode = inpred$distr$mode(self$param_set$values$which),
-        inpred$distr$mean()
-      ))
-
-      if (length(inpred$lp)) {
-        lp = inpred$lp
-      } else {
-        lp = NULL
-      }
-
       response = self$param_set$values$response
-      if (!is.null(response) && response) {
-        response = crank
-      } else {
-        response = NULL
-      }
+      b_response = !any(is.na(inpred$response))
+      if (!length(response)) response = FALSE
 
-      return(list(PredictionSurv$new(
-        row_ids = inpred$row_ids, truth = inpred$truth, crank = crank,
-        distr = inpred$distr, lp = lp, response = response)))
+      overwrite = self$param_set$values$overwrite
+      if (!length(overwrite)) overwrite = FALSE
+
+      # if crank and response already exist and not overwriting then return prediction
+      if (!overwrite && (!response || (response && b_response))) {
+        return(list(inpred))
+      } else {
+        assert("distr" %in% inpred$predict_types)
+        method = self$param_set$values$method
+        if (length(method) == 0) method = "mean"
+        comp = as.numeric(switch(method,
+                                 median = inpred$distr$median(),
+                                 mode = inpred$distr$mode(self$param_set$values$which),
+                                 inpred$distr$mean()
+        ))
+
+        # if crank exists and not overwriting then return predicted crank, otherwise compose
+        if (!overwrite) {
+          crank = inpred$crank
+        } else {
+          crank = comp
+        }
+
+        # i) not overwriting or requesting response, and already predicted
+        if (b_response && (!overwrite || !response)) {
+          response = inpred$response
+          # ii) not requesting response and doesn't exist
+        } else if (!response) {
+          response = NULL
+          # iii) requesting response and happy to overwrite
+          # iv) requesting response and doesn't exist
+        } else {
+          response = comp
+        }
+
+        if (!any(is.na(inpred$lp))) {
+          lp = inpred$lp
+        } else {
+          lp = NULL
+        }
+
+        return(list(PredictionSurv$new(
+          row_ids = inpred$row_ids, truth = inpred$truth, crank = crank,
+          distr = inpred$distr, lp = lp, response = response)))
+      }
     }
   )
-
-  # private = list(
-  #   .train = function(inputs) {
-  #     self$state = list()
-  #     list(NULL)
-  #   },
-  #
-  #   .predict = function(inputs) {
-  #     inpred = inputs[[1]]
-  #
-  #     assert("distr" %in% inpred$predict_types)
-  #     method = self$param_set$values$method
-  #     if(length(method) == 0) method = "mean"
-  #     crank = as.numeric(switch(method,
-  #                               median = inpred$distr$median(),
-  #                               mode = inpred$distr$mode(),
-  #                               inpred$distr$mean()
-  #     ))
-  #
-  #     if (length(inpred$lp) == 0)
-  #       lp = NULL
-  #     else
-  #       lp = inpred$lp
-  #
-  #     return(list(PredictionSurv$new(row_ids = inpred$row_ids, truth = inpred$truth,
-  #     crank = crank,
-  #                                    distr = inpred$distr, lp = lp)))
-  #   }
-  # )
 )

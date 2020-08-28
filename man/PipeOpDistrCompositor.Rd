@@ -73,56 +73,24 @@ predicted linear predictor. If the input model does not predict a linear predict
 is assumed to be the \code{lp} - \strong{this may be a strong and unreasonable assumption.}
 }
 
-\section{Fields}{
-
-Only fields inherited from \link[mlr3pipelines:PipeOp]{PipeOp}.
-}
-
-\section{Methods}{
-
-Only methods inherited from \link[mlr3pipelines:PipeOp]{PipeOp}.
-}
-
 \examples{
 \dontrun{
 library(mlr3)
 library(mlr3pipelines)
-set.seed(42)
+set.seed(1)
+task = tgen("simsurv")$generate(20)
 
-# Three methods to transform the cox ph predicted `distr` to an
-#  accelerated failure time model
-task = tgen("simsurv")$generate(30)
-
-# Method 1 - Train and predict separately then compose
 base = lrn("surv.kaplan")$train(task)$predict(task)
 pred = lrn("surv.coxph")$train(task)$predict(task)
 pod = po("distrcompose", param_vals = list(form = "aft", overwrite = TRUE))
-pod$predict(list(base = base, pred = pred))
-
-# Method 2 - Create a graph manually
-gr = Graph$new()$
-  add_pipeop(po("learner", lrn("surv.kaplan")))$
-  add_pipeop(po("learner", lrn("surv.coxph")))$
-  add_pipeop(po("distrcompose"))$
-  add_edge("surv.kaplan", "distrcompose", dst_channel = "base")$
-  add_edge("surv.coxph", "distrcompose", dst_channel = "pred")
-gr$train(task)
-gr$predict(task)
-
-# Method 3 - Syntactic sugar: Wrap the learner in a graph.
-cox.distr = distrcompositor(
-  learner = lrn("surv.coxph"),
-  estimator = "kaplan",
-  form = "aft")
-cox.distr$train(task)$predict(task)
+pod$predict(list(base = base, pred = pred))[[1]]
 }
 }
 \seealso{
-\link[mlr3pipelines:PipeOp]{mlr3pipelines::PipeOp} and \link{distrcompositor}
+\link{pipeline_distrcompositor}
 
 Other survival compositors: 
-\code{\link{PipeOpCrankCompositor}},
-\code{\link{PipeOpProbregrCompositor}}
+\code{\link{PipeOpCrankCompositor}}
 }
 \concept{survival compositors}
 \section{Super class}{
@@ -132,8 +100,6 @@ Other survival compositors:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{PipeOpDistrCompositor$new()}}
-\item \href{#method-train_internal}{\code{PipeOpDistrCompositor$train_internal()}}
-\item \href{#method-predict_internal}{\code{PipeOpDistrCompositor$predict_internal()}}
 \item \href{#method-clone}{\code{PipeOpDistrCompositor$clone()}}
 }
 }
@@ -153,7 +119,7 @@ Other survival compositors:
 Creates a new instance of this \link[R6:R6Class]{R6} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipeOpDistrCompositor$new(
-  id = "distrcompose",
+  id = "compose_distr",
   param_vals = list(form = "aft", overwrite = FALSE)
 )}\if{html}{\out{</div>}}
 }
@@ -167,44 +133,6 @@ Identifier of the resulting  object.}
 \item{\code{param_vals}}{(\code{list()})\cr
 List of hyperparameter settings, overwriting the hyperparameter settings that would
 otherwise be set during construction.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-train_internal"></a>}}
-\if{latex}{\out{\hypertarget{method-train_internal}{}}}
-\subsection{Method \code{train_internal()}}{
-train_internal
-Internal \code{train} function, will be moved to \code{private} in a near-future update, should be
-ignored.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipeOpDistrCompositor$train_internal(inputs)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Ignore.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-predict_internal"></a>}}
-\if{latex}{\out{\hypertarget{method-predict_internal}{}}}
-\subsection{Method \code{predict_internal()}}{
-predict_internal
-Internal \code{predict} function, will be moved to \code{private} in a near-future update, should be
-ignored.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipeOpDistrCompositor$predict_internal(inputs)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Ignore.}
 }
 \if{html}{\out{</div>}}
 }

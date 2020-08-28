@@ -323,27 +323,18 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>truth</code> - the <code>target</code>. This is <em>not</em> the true density which is always unknown.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(mlr3proba); <span class="kw">library</span>(mlr3)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; Registered S3 methods overwritten by 'mlr3proba':</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#&gt;   method                       from</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt;   as.data.table.PredictionRegr mlr3</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt;   c.PredictionRegr             mlr3</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Attaching package: 'mlr3'</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; The following object is masked from 'package:mlr3proba':</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;     PredictionRegr</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">task =<span class="st"> </span>TaskDens<span class="op">$</span><span class="kw">new</span>(<span class="dt">id =</span> <span class="st">&quot;mpg&quot;</span>, <span class="dt">backend =</span> datasets<span class="op">::</span>mtcars, <span class="dt">target =</span> <span class="st">&quot;mpg&quot;</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">task</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; &lt;TaskDens:mpg&gt; (32 x 11)</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; * Target: mpg</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; * Properties: -</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; * Features (10):</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;   - dbl (10): am, carb, cyl, disp, drat, gear, hp, qsec, vs, wt</span></a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">task =<span class="st"> </span>TaskDens<span class="op">$</span><span class="kw">new</span>(<span class="dt">id =</span> <span class="st">&quot;mpg&quot;</span>, <span class="dt">backend =</span> datasets<span class="op">::</span>mtcars, <span class="dt">target =</span> <span class="st">&quot;mpg&quot;</span>)</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">task</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt; &lt;TaskDens:mpg&gt; (32 x 11)</span></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt; * Target: mpg</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; * Properties: -</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; * Features (10):</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt;   - dbl (10): am, carb, cyl, disp, drat, gear, hp, qsec, vs, wt</span></a>
-<a class="sourceLine" id="cb1-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">task<span class="op">$</span><span class="kw">truth</span>()[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt;  [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-12" data-line-number="12">task<span class="op">$</span><span class="kw">truth</span>()[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;  [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2</span></a></code></pre></div>
 </div>
 <div id="train-and-predict" class="section level2">
 <h2>Train and Predict</h2>

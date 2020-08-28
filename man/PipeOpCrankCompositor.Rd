@@ -47,6 +47,10 @@ Default is \code{mean}.
 If \code{method = "mode"} then specifies which mode to use if multi-modal, default is the first.
 \item \code{response} :: \code{logical(1)}\cr
 If \code{TRUE} then the \code{response} predict type is estimated with the same values as \code{crank}.
+\item \code{overwrite} :: \code{logical(1)} \cr
+If \code{FALSE} (default) then if the "pred" input already has a \code{crank}, the compositor only
+composes a \code{response} type if \code{response = TRUE} and does not already exist. If \code{TRUE} then
+both the \code{crank} and \code{response} are overwritten.
 }
 }
 
@@ -57,51 +61,23 @@ calculated using \link[distr6:median.Distribution]{distr6::median.Distribution},
 respectively.
 }
 
-\section{Fields}{
-
-Only fields inherited from \link[mlr3pipelines:PipeOp]{PipeOp}.
-}
-
-\section{Methods}{
-
-Only fields inherited from \link[mlr3pipelines:PipeOp]{PipeOp}.
-}
-
 \examples{
 \dontrun{
 library(mlr3)
 library(mlr3pipelines)
 set.seed(1)
+task = tgen("simsurv")$generate(20)
 
-# Three methods to predict a `crank` from `surv.rpart`
-task = tgen("simsurv")$generate(30)
-
-# Method 1 - Train and predict separately then compose
 learn = lrn("surv.coxph")$train(task)$predict(task)
 poc = po("crankcompose", param_vals = list(method = "mean"))
-poc$predict(list(learn))
-
-# Method 2 - Create a graph manually
-gr = Graph$new()$
-  add_pipeop(po("learner", lrn("surv.coxph")))$
-  add_pipeop(po("crankcompose"))$
-  add_edge("surv.coxph", "crankcompose")
-gr$train(task)
-gr$predict(task)
-
-# Method 3 - Syntactic sugar: Wrap the learner in a graph
-cox.crank = crankcompositor(
-  learner = lrn("surv.coxph"),
-  method = "median")
-resample(task, cox.crank, rsmp("cv", folds = 2))$predictions()
+poc$predict(list(learn))[[1]]
 }
 }
 \seealso{
-\link[mlr3pipelines:PipeOp]{mlr3pipelines::PipeOp} and \link{crankcompositor}
+\link{pipeline_crankcompositor}
 
 Other survival compositors: 
-\code{\link{PipeOpDistrCompositor}},
-\code{\link{PipeOpProbregrCompositor}}
+\code{\link{PipeOpDistrCompositor}}
 }
 \concept{survival compositors}
 \section{Super class}{
@@ -111,8 +87,6 @@ Other survival compositors:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{PipeOpCrankCompositor$new()}}
-\item \href{#method-train_internal}{\code{PipeOpCrankCompositor$train_internal()}}
-\item \href{#method-predict_internal}{\code{PipeOpCrankCompositor$predict_internal()}}
 \item \href{#method-clone}{\code{PipeOpCrankCompositor$clone()}}
 }
 }
@@ -132,8 +106,8 @@ Other survival compositors:
 Creates a new instance of this \link[R6:R6Class]{R6} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipeOpCrankCompositor$new(
-  id = "crankcompose",
-  param_vals = list(method = "mean")
+  id = "compose_crank",
+  param_vals = list(method = "mean", response = FALSE, overwrite = FALSE)
 )}\if{html}{\out{</div>}}
 }
 
@@ -146,44 +120,6 @@ Identifier of the resulting  object.}
 \item{\code{param_vals}}{(\code{list()})\cr
 List of hyperparameter settings, overwriting the hyperparameter settings that would
 otherwise be set during construction.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-train_internal"></a>}}
-\if{latex}{\out{\hypertarget{method-train_internal}{}}}
-\subsection{Method \code{train_internal()}}{
-train_internal
-Internal \code{train} function, will be moved to \code{private} in a near-future update, should be
-ignored.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipeOpCrankCompositor$train_internal(inputs)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Ignore.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-predict_internal"></a>}}
-\if{latex}{\out{\hypertarget{method-predict_internal}{}}}
-\subsection{Method \code{predict_internal()}}{
-predict_internal
-Internal \code{predict} function, will be moved to \code{private} in a near-future update, should be
-ignored.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipeOpCrankCompositor$predict_internal(inputs)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Ignore.}
 }
 \if{html}{\out{</div>}}
 }

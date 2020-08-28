@@ -1,8 +1,6 @@
 #' @title PipeOpSurvAvg
-#'
-#' @usage NULL
+#' @template param_pipelines
 #' @name mlr_pipeops_survavg
-#' @format [R6Class] inheriting from [mlr3pipelines::PipeOp].
 #'
 #' @description
 #' Perform (weighted) prediction averaging from survival [PredictionSurv]s by connecting
@@ -16,7 +14,6 @@
 #'
 #' Weights can be set as a parameter; if none are provided, defaults to
 #' equal weights for each prediction.
-#'
 #'
 #' @section Input and Output Channels:
 #' Input and output channels are inherited from [PipeOpEnsemble][mlr3pipelines::PipeOpEnsemble]
@@ -32,14 +29,6 @@
 #' @section Internals:
 #' Inherits from [PipeOpEnsemble][mlr3pipelines::PipeOpEnsemble] by implementing the
 #' `private$weighted_avg_predictions()` method.
-#'
-#' @section Fields:
-#' Only fields inherited from
-#' [PipeOpEnsemble][mlr3pipelines::PipeOpEnsemble]/[PipeOp][mlr3pipelines::PipeOp].
-#'
-#' @section Methods:
-#' Only methods inherited from
-#' [PipeOpEnsemble][mlr3pipelines::PipeOpEnsemble]/[PipeOp][mlr3pipelines::PipeOp].
 #'
 #' @family PipeOps
 #' @family Ensembles
@@ -67,40 +56,38 @@ PipeOpSurvAvg = R6Class("PipeOpSurvAvg",
     #'   Determines the number of input channels.
     #'   If `innum` is 0 (default), a vararg input channel is created that can take an arbitrary
     #'   number of inputs.
-    #' @param id (`character(1)`)\cr
-    #'  Identifier of the resulting  object, default `"survavg"`.
-    #' @param param_vals (`list()`)\cr
-    #'   List of hyperparameter settings, overwriting the hyperparameter settings that would
-    #'   otherwise be set during construction.
     #' @param ... `ANY`\cr
     #' Additional arguments passed to [mlr3pipelines::PipeOpEnsemble].
     initialize = function(innum = 0, id = "survavg",
                           param_vals = list(), ...) {
-      super$initialize(innum, id, param_vals = param_vals,
-                       prediction_type = "PredictionSurv", ...)
+      super$initialize(innum = innum,
+                       id = id,
+                       param_vals = param_vals,
+                       prediction_type = "PredictionSurv",
+                       ...)
     }
   ),
   private = list(
     weighted_avg_predictions = function(inputs, weights, row_ids, truth) {
       response_matrix = map(inputs, "response")
-      if (all(as.logical(mlr3misc::map_int(response_matrix, length)))) {
-        response = c(simplify2array(response_matrix) %*% weights)
-      } else {
+      if (any(mlr3misc::map_lgl(response_matrix, function(.x) any(is.na(.x))))) {
         response = NULL
+      } else {
+        response = c(simplify2array(response_matrix) %*% weights)
       }
 
       crank_matrix = map(inputs, "crank")
-      if (all(as.logical(mlr3misc::map_int(crank_matrix, length)))) {
-        crank = c(simplify2array(crank_matrix) %*% weights)
-      } else {
+      if (any(mlr3misc::map_lgl(crank_matrix, function(.x) any(is.na(.x))))) {
         crank = NULL
+      } else {
+        crank = c(simplify2array(crank_matrix) %*% weights)
       }
 
       lp_matrix = map(inputs, "lp")
-      if (all(as.logical(mlr3misc::map_int(lp_matrix, length)))) {
-        lp = c(simplify2array(lp_matrix) %*% weights)
-      } else {
+      if (any(mlr3misc::map_lgl(lp_matrix, function(.x) any(is.na(.x))))) {
         lp = NULL
+      } else {
+        lp = c(simplify2array(lp_matrix) %*% weights)
       }
 
       if (length(unique(weights)) == 1) {
@@ -108,7 +95,8 @@ PipeOpSurvAvg = R6Class("PipeOpSurvAvg",
       }
 
       distr = map(inputs, "distr")
-      if (all(as.logical(mlr3misc::map_int(distr, length)))) {
+      if (all(mlr3misc::map_lgl(distr, function(.x)
+        checkmate::test_class(.x, "VectorDistribution")))) {
         distr = distr6::mixturiseVector(distr, weights)
       } else {
         distr = NULL
@@ -120,5 +108,3 @@ PipeOpSurvAvg = R6Class("PipeOpSurvAvg",
     }
   )
 )
-
-mlr_pipeops$add("survavg", PipeOpSurvAvg)

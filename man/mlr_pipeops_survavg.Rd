@@ -4,9 +4,6 @@
 \alias{mlr_pipeops_survavg}
 \alias{PipeOpSurvAvg}
 \title{PipeOpSurvAvg}
-\format{
-\link{R6Class} inheriting from \link[mlr3pipelines:PipeOp]{mlr3pipelines::PipeOp}.
-}
 \description{
 Perform (weighted) prediction averaging from survival \link{PredictionSurv}s by connecting
 \code{PipeOpSurvAvg} to multiple \link[mlr3pipelines:PipeOpLearner]{PipeOpLearner} outputs.
@@ -45,18 +42,6 @@ Inherits from \link[mlr3pipelines:PipeOpEnsemble]{PipeOpEnsemble} by implementin
 \code{private$weighted_avg_predictions()} method.
 }
 
-\section{Fields}{
-
-Only fields inherited from
-\link[mlr3pipelines:PipeOpEnsemble]{PipeOpEnsemble}/\link[mlr3pipelines:PipeOp]{PipeOp}.
-}
-
-\section{Methods}{
-
-Only methods inherited from
-\link[mlr3pipelines:PipeOpEnsemble]{PipeOpEnsemble}/\link[mlr3pipelines:PipeOp]{PipeOp}.
-}
-
 \examples{
 \dontrun{
 library(mlr3)
@@ -69,6 +54,16 @@ p2 = lrn("surv.kaplan")$train(task)$predict(task)
 poc = po("survavg", param_vals = list(weights = c(0.2, 0.8)))
 poc$predict(list(p1, p2))
 }
+}
+\seealso{
+Other PipeOps: 
+\code{\link{PipeOpPredTransformer}},
+\code{\link{PipeOpTaskTransformer}},
+\code{\link{PipeOpTransformer}},
+\code{\link{mlr_pipeops_trafopred_regrsurv}},
+\code{\link{mlr_pipeops_trafopred_survregr}},
+\code{\link{mlr_pipeops_trafotask_regrsurv}},
+\code{\link{mlr_pipeops_trafotask_survregr}}
 }
 \concept{Ensembles}
 \concept{PipeOps}
@@ -88,8 +83,6 @@ poc$predict(list(p1, p2))
 \item \out{<span class="pkg-link" data-pkg="mlr3pipelines" data-topic="PipeOp" data-id="predict">}\href{../../mlr3pipelines/html/PipeOp.html#method-predict}{\code{mlr3pipelines::PipeOp$predict()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="mlr3pipelines" data-topic="PipeOp" data-id="print">}\href{../../mlr3pipelines/html/PipeOp.html#method-print}{\code{mlr3pipelines::PipeOp$print()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="mlr3pipelines" data-topic="PipeOp" data-id="train">}\href{../../mlr3pipelines/html/PipeOp.html#method-train}{\code{mlr3pipelines::PipeOp$train()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3pipelines" data-topic="PipeOpEnsemble" data-id="predict_internal">}\href{../../mlr3pipelines/html/PipeOpEnsemble.html#method-predict_internal}{\code{mlr3pipelines::PipeOpEnsemble$predict_internal()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3pipelines" data-topic="PipeOpEnsemble" data-id="train_internal">}\href{../../mlr3pipelines/html/PipeOpEnsemble.html#method-train_internal}{\code{mlr3pipelines::PipeOpEnsemble$train_internal()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -111,7 +104,7 @@ If \code{innum} is 0 (default), a vararg input channel is created that can take 
 number of inputs.}
 
 \item{\code{id}}{(\code{character(1)})\cr
-Identifier of the resulting  object, default \code{"survavg"}.}
+Identifier of the resulting  object.}
 
 \item{\code{param_vals}}{(\code{list()})\cr
 List of hyperparameter settings, overwriting the hyperparameter settings that would
