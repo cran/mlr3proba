@@ -3,7 +3,7 @@
 #' @name mlr_task_generators_simdens
 #'
 #' @description
-#' A [mlr3::TaskGenerator] calling [distr6::distrSimulate()] from package \CRANpkg{simsurv}.
+#' A [mlr3::TaskGenerator] calling [distr6::distrSimulate()].
 #' See [distr6::distrSimulate()] for an explanation of the hyperparameters.
 #'
 #' @templateVar id simdens
@@ -35,7 +35,7 @@ TaskGeneratorSimdens = R6::R6Class("TaskGeneratorSimdens",
   private = list(
     .generate = function(n) {
       data = invoke(distr6::distrSimulate, n = n, .args = self$param_set$values)
-      data = data.frame(unimportant = runif(n), y = data)
+      data = data.frame(unimportant = stats::runif(n), y = data)
       TaskDens$new(sprintf("%s_%i", self$id, n), data, target = "y")
     }
   )

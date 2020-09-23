@@ -1,6 +1,5 @@
 #' @title PipeOpDistrCompositor
-#' @aliases mlr_pipeops_distrcompose
-#'
+#' @name mlr_pipeops_compose_distr
 #' @template param_pipelines
 #'
 #' @description
@@ -65,15 +64,16 @@
 #' @family survival compositors
 #' @examples
 #' \dontrun{
+#' if (requireNamespace("mlr3pipelines", quietly = TRUE)) {
 #' library(mlr3)
 #' library(mlr3pipelines)
-#' set.seed(1)
-#' task = tgen("simsurv")$generate(20)
+#' task = tsk("rats")
 #'
 #' base = lrn("surv.kaplan")$train(task)$predict(task)
 #' pred = lrn("surv.coxph")$train(task)$predict(task)
 #' pod = po("distrcompose", param_vals = list(form = "aft", overwrite = TRUE))
 #' pod$predict(list(base = base, pred = pred))[[1]]
+#' }
 #' }
 PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
   inherit = mlr3pipelines::PipeOp,
@@ -124,17 +124,17 @@ PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
         base = base$distr[1]
         times = unlist(base$properties$support$elements)
 
-        nr = nrow(inpred$data$tab)
+        nr = length(inpred$data$row_ids)
         nc = length(times)
 
-        if (any(is.na(inpred$lp))) {
+        if (anyMissing(inpred$lp)) {
           lp = inpred$crank
         } else {
           lp = inpred$lp
         }
 
-        timesmat = matrix(times, nrow = nr, ncol = nc, byrow = T)
-        survmat = matrix(base$survival(times), nrow = nr, ncol = nc, byrow = T)
+        timesmat = matrix(times, nrow = nr, ncol = nc, byrow = TRUE)
+        survmat = matrix(base$survival(times), nrow = nr, ncol = nc, byrow = TRUE)
         lpmat = matrix(lp, nrow = nr, ncol = nc)
 
         if (form == "ph") {
@@ -156,7 +156,7 @@ PipeOpDistrCompositor = R6Class("PipeOpDistrCompositor",
           distribution = "WeightedDiscrete", params = x,
           decorators = c("CoreStatistics", "ExoticStatistics"))
 
-        if (any(is.na(inpred$lp))) {
+        if (anyMissing(inpred$lp)) {
           lp = NULL
         } else {
           lp = inpred$lp

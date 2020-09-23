@@ -1,5 +1,5 @@
 #' @title PipeOpCrankCompositor
-#' @aliases mlr_pipeops_crankcompose
+#' @name mlr_pipeops_compose_crank
 #' @template param_pipelines
 #'
 #' @description
@@ -53,14 +53,15 @@
 #' @family survival compositors
 #' @examples
 #' \dontrun{
+#' if (requireNamespace("mlr3pipelines", quietly = TRUE)) {
 #' library(mlr3)
 #' library(mlr3pipelines)
-#' set.seed(1)
-#' task = tgen("simsurv")$generate(20)
+#' task = tsk("rats")
 #'
 #' learn = lrn("surv.coxph")$train(task)$predict(task)
 #' poc = po("crankcompose", param_vals = list(method = "mean"))
 #' poc$predict(list(learn))[[1]]
+#' }
 #' }
 #' @export
 PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
@@ -101,7 +102,7 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
       inpred = inputs[[1]]
 
       response = self$param_set$values$response
-      b_response = !any(is.na(inpred$response))
+      b_response = !anyMissing(inpred$response)
       if (!length(response)) response = FALSE
 
       overwrite = self$param_set$values$overwrite
@@ -139,7 +140,7 @@ PipeOpCrankCompositor = R6Class("PipeOpCrankCompositor",
           response = comp
         }
 
-        if (!any(is.na(inpred$lp))) {
+        if (!anyMissing(inpred$lp)) {
           lp = inpred$lp
         } else {
           lp = NULL

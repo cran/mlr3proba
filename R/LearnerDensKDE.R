@@ -5,6 +5,7 @@
 #' @details The default bandwidth uses Silverman's rule-of-thumb for Gaussian kernels, however for
 #' non-Gaussian kernels it is recommended to use \CRANpkg{mlr3tuning} to tune the bandwidth with
 #' cross-validation. Other density learners can be used for automated bandwidth selection.
+#' The default kernel is Epanechnikov (chosen to reduce dependencies).
 #'
 #' @references
 #' \cite{mlr3proba}{silverman_1986}
@@ -20,12 +21,12 @@ LearnerDensKDE = R6::R6Class("LearnerDensKDE",
         ParamFct$new("kernel",
           levels = subset(distr6::listKernels(),
             select = "ShortName")[[1]],
-          default = "Norm", tags = "train"),
+          default = "Epan", tags = "train"),
         ParamDbl$new("bandwidth",
           lower = 0, tags = "train",
           special_vals = list("silver"))))
 
-      ps$values = list(kernel = "Norm", bandwidth = "silver")
+      ps$values = list(kernel = "Epan", bandwidth = "silver")
 
       super$initialize(
         id = "dens.kde",
@@ -46,7 +47,7 @@ LearnerDensKDE = R6::R6Class("LearnerDensKDE",
         ShortName == self$param_set$values$kernel,
         ClassName)))$new()
       bw = ifelse(self$param_set$values$bandwidth == "silver",
-        0.9 * min(sd(task$truth()), IQR(task$truth(), na.rm = TRUE) / 1.349, na.rm = TRUE) *
+        0.9 * min(sd(task$truth()), stats::IQR(task$truth(), na.rm = TRUE) / 1.349, na.rm = TRUE) *
           length(task$truth())^-0.2,
         self$param_set$values$bandwidth)
 

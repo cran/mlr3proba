@@ -1,7 +1,5 @@
 #' @title PipeOpTaskSurvRegr
-#'
 #' @template param_pipelines
-#'
 #' @name mlr_pipeops_trafotask_survregr
 #'
 #' @description
@@ -46,7 +44,7 @@
 #' * `eps::numeric(1)`\cr
 #' Small value to replace `0` survival probabilities with in IPCW to prevent infinite weights.
 #' * `lambda::(numeric(1))`\cr
-#' Nearest neighbours parameter for `mlr3learners.proba::akritas` estimator, default `0.5`.
+#' Nearest neighbours parameter for `mlr3extralearners::akritas` estimator, default `0.5`.
 #' * `features, target :: character())`\cr
 #' For `"reorder"` method, specify which columns become features and targets.
 #' * `learner cneter, mimpu, iter.bj, max.cycle, mstop, nu`\cr
@@ -61,12 +59,12 @@
 #'
 #' @examples
 #' \dontrun{
+#' if (requireNamespace("mlr3pipelines", quietly = TRUE)) {
 #' library(mlr3)
 #' library(mlr3pipelines)
 #'
 #' # these methods are generally only successful if censoring is not too high
 #' # create survival task by undersampling
-#' set.seed(1)
 #' task = tsk("rats")$filter(
 #'    c(which(tsk("rats")$truth()[,2]==1),
 #'    sample(which(tsk("rats")$truth()[,2]==0), 42))
@@ -80,11 +78,13 @@
 #' po = po("trafotask_survregr", method = "omit")
 #' po$train(list(task, NULL))[[1]]
 #'
+#' if (requireNamespace("mlr3extralearners", quietly = TRUE)) {
 #' # ipcw with Akritas
 #' po = po("trafotask_survregr", method = "ipcw", estimator = "akritas", lambda = 0.4, alpha = 0)
 #' new_task = po$train(list(task, NULL))[[1]]
 #' print(new_task)
 #' new_task$weights
+#' }
 #'
 #' # mrl with Kaplan-Meier
 #' po = po("trafotask_survregr", method = "mrl")
@@ -92,9 +92,11 @@
 #' data.frame(new = new_task$truth(), old = task$truth())
 #'
 #' # Buckley-James imputation
+#' if (requireNamespace("bujar", quietly = TRUE)) {
 #' po = po("trafotask_survregr", method = "bj")
 #' new_task = po$train(list(task, NULL))[[1]]
 #' data.frame(new = new_task$truth(), old = task$truth())
+#' }
 #'
 #' # reorder - in practice this will be only be used in a few graphs
 #' po = po("trafotask_survregr", method = "reorder", features = c("sex", "rx", "time", "status"),
@@ -106,6 +108,7 @@
 #' po = po("trafotask_survregr", method = "reorder", target = "litter")
 #' new_task = po$train(list(task, task))[[1]]
 #' print(new_task)
+#' }
 #' }
 #' @family PipeOps
 #' @family Transformation PipeOps
@@ -225,7 +228,7 @@ PipeOpTaskSurvRegr = R6Class("PipeOpTaskSurvRegr",
       est = switch(estimator,
                    kaplan = LearnerSurvKaplan,
                    cox = LearnerSurvCoxPH,
-                   akritas = mlr3learners.proba::LearnerSurvAkritas)$new()
+                   akritas = mlr3extralearners::LearnerSurvAkritas)$new()
       if (estimator == "akritas") {
         est$param_set$values$lambda = self$param_set$values$lambda
       }
@@ -266,7 +269,7 @@ PipeOpTaskSurvRegr = R6Class("PipeOpTaskSurvRegr",
         if (estimator == "cox") {
           est = LearnerSurvCoxPH$new()$train(input)$predict(input)$distr
         } else {
-          est = mlr3learners.proba::LearnerSurvAkritas$new()
+          est = mlr3extralearners::LearnerSurvAkritas$new()
           est$param_set$values$lambda = self$param_set$values$lambda
           est = est$train(input)$predict(input)$distr
         }
@@ -285,6 +288,8 @@ PipeOpTaskSurvRegr = R6Class("PipeOpTaskSurvRegr",
     },
 
     .bj = function(backend, status, time) {
+      mlr3misc::require_namespaces("bujar")
+
       x = data.frame(backend)[, colnames(backend) %nin% c(time, status), drop = FALSE]
       x = model.matrix(~., x)[,-1]
       bj = mlr3misc::invoke(bujar::bujar,

@@ -20,9 +20,11 @@
 #' @template seealso_task_generator
 #' @export
 #' @examples
+#' if (requireNamespace("simsurv", quietly = TRUE)) {
 #' generator = mlr3::mlr_task_generators$get("simsurv")
 #' task = generator$generate(20)
 #' task$head()
+#' }
 TaskGeneratorSimsurv = R6Class("TaskGeneratorSimsurv",
   inherit = TaskGenerator,
   public = list(
@@ -46,9 +48,9 @@ TaskGeneratorSimsurv = R6Class("TaskGeneratorSimsurv",
 
       pv = self$param_set$values
       covs = data.table(
-        treatment = rbinom(n, 1L, 0.5),
-        height = rnorm(n, 180, 15),
-        weight = rnorm(n, 80, 10)
+        treatment = stats::rbinom(n, 1L, 0.5),
+        height = stats::rnorm(n, 180, 15),
+        weight = stats::rnorm(n, 80, 10)
       )
       betas = c(treatment = -0.5, height = 1, weight = 0)
 
