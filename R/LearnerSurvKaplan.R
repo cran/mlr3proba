@@ -8,7 +8,7 @@
 #'
 #'
 #' @references
-#' \cite{mlr3proba}{kaplan_1958}
+#' `r tools::toRd(bibentries["kaplan_1958"])`
 #'
 #' @export
 LearnerSurvKaplan = R6Class("LearnerSurvKaplan",
@@ -22,7 +22,7 @@ LearnerSurvKaplan = R6Class("LearnerSurvKaplan",
         predict_types = c("crank", "distr"),
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
         properties = "missings",
-        packages = c("survival", "distr6", "pracma"),
+        packages = c("survival", "distr6"),
         man = "mlr3proba::mlr_learners_surv.kaplan"
       )
     }
@@ -47,7 +47,7 @@ LearnerSurvKaplan = R6Class("LearnerSurvKaplan",
       # Define crank as the mean of the survival distribution
       crank = as.numeric(sum(x[[1]]$x * c(x[[1]]$cdf[1], diff(x[[1]]$cdf))))
 
-      PredictionSurv$new(task = task, crank = rep(crank, task$nrow), distr = distr)
+      list(crank = rep(crank, task$nrow), distr = distr)
     }
   )
 )

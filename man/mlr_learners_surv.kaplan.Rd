@@ -16,7 +16,7 @@ Calls \code{\link[survival:survfit]{survival::survfit()}}.
 \section{Dictionary}{
 
 This \link[mlr3:Learner]{Learner} can be instantiated via the \link[mlr3misc:Dictionary]{dictionary}
-\link[mlr3:mlr_learners]{mlr_learners} or with the associated sugar function \link[mlr3:lrn]{lrn()}:\preformatted{LearnerSurvKaplan$new()
+\link[mlr3:mlr_learners]{mlr_learners} or with the associated sugar function \link[mlr3:mlr_sugar]{lrn()}:\preformatted{LearnerSurvKaplan$new()
 mlr_learners$get("surv.kaplan")
 lrn("surv.kaplan")
 }
@@ -29,12 +29,15 @@ lrn("surv.kaplan")
 \item Predict Types: \verb{crank, distr}
 \item Feature Types: \verb{logical, integer, numeric, character, factor, ordered}
 \item Properties: \code{missings}
-\item Packages: \CRANpkg{survival} \CRANpkg{distr6} \CRANpkg{pracma}
+\item Packages: \CRANpkg{survival} \CRANpkg{distr6}
 }
 }
 
 \references{
-\cite{mlr3proba}{kaplan_1958}
+Kaplan EL, Meier P (1958).
+\dQuote{Nonparametric Estimation from Incomplete Observations.}
+\emph{Journal of the American Statistical Association}, \bold{53}(282), 457--481.
+\doi{10.1080/01621459.1958.10501452}.
 }
 \seealso{
 Other survival learners: 

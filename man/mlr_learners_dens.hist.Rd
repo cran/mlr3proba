@@ -10,7 +10,7 @@ Calls \code{\link[graphics:hist]{graphics::hist()}} and the result is coerced to
 \section{Dictionary}{
 
 This \link[mlr3:Learner]{Learner} can be instantiated via the \link[mlr3misc:Dictionary]{dictionary}
-\link[mlr3:mlr_learners]{mlr_learners} or with the associated sugar function \link[mlr3:lrn]{lrn()}:\preformatted{LearnerDensHistogram$new()
+\link[mlr3:mlr_learners]{mlr_learners} or with the associated sugar function \link[mlr3:mlr_sugar]{lrn()}:\preformatted{LearnerDensHistogram$new()
 mlr_learners$get("dens.hist")
 lrn("dens.hist")
 }
@@ -21,7 +21,7 @@ lrn("dens.hist")
 \itemize{
 \item Type: "dens"
 \item Predict Types: \verb{pdf, cdf}
-\item Feature Types: \verb{logical, integer, numeric, character, factor, ordered}
+\item Feature Types: \verb{integer, numeric}
 \item Properties: \code{-}
 \item Packages: \CRANpkg{distr6}
 }

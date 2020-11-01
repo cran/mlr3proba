@@ -8,7 +8,7 @@
 #' The default kernel is Epanechnikov (chosen to reduce dependencies).
 #'
 #' @references
-#' \cite{mlr3proba}{silverman_1986}
+#' `r tools::toRd(bibentries["silverman_1986"])`
 #'
 #' @export
 LearnerDensKDE = R6::R6Class("LearnerDensKDE",
@@ -32,7 +32,7 @@ LearnerDensKDE = R6::R6Class("LearnerDensKDE",
         id = "dens.kde",
         param_set = ps,
         predict_types = "pdf",
-        feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
+        feature_types = c("integer", "numeric"),
         properties = "missings",
         packages = "distr6",
         man = "mlr3proba::mlr_learners_dens.kde"
@@ -42,13 +42,23 @@ LearnerDensKDE = R6::R6Class("LearnerDensKDE",
 
   private = list(
     .train = function(task) {
+
+      if(self$param_set$values$kernel == "Norm" && !requireNamespace("pracma", quietly = TRUE)) {
+        stop("{pracma} is required for Normal kernel, reverting to Epanechnikov.")
+        self$param_set$values$kernel == "Epan"
+      }
+
+      data = task$data()[[1]]
+
       kernel = get(as.character(subset(
-        listKernels(),
+        distr6::listKernels(),
         ShortName == self$param_set$values$kernel,
         ClassName)))$new()
+
+
       bw = ifelse(self$param_set$values$bandwidth == "silver",
-        0.9 * min(sd(task$truth()), stats::IQR(task$truth(), na.rm = TRUE) / 1.349, na.rm = TRUE) *
-          length(task$truth())^-0.2,
+        0.9 * min(sd(data), stats::IQR(data, na.rm = TRUE) / 1.349, na.rm = TRUE) *
+          length(data)^-0.2,
         self$param_set$values$bandwidth)
 
       pdf = function(x) {} #nolint
@@ -63,7 +73,7 @@ LearnerDensKDE = R6::R6Class("LearnerDensKDE",
         }
       }, list(
         rows = task$nrow,
-        train = task$truth(),
+        train = data,
         bw = bw,
         kernel = kernel))
 
@@ -75,7 +85,7 @@ LearnerDensKDE = R6::R6Class("LearnerDensKDE",
     },
 
     .predict = function(task) {
-      PredictionDens$new(task = task, pdf = self$model$pdf(task$truth()))
+      list(pdf = self$model$pdf(task$data()[[1]]))
     }
   )
 )

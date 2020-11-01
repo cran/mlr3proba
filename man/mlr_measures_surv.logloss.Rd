@@ -21,7 +21,7 @@ Censored observations in the test set are ignored.
 \section{Dictionary}{
 
 This \link[mlr3:Measure]{Measure} can be instantiated via the \link[mlr3misc:Dictionary]{dictionary}
-\link[mlr3:mlr_measures]{mlr_measures} or with the associated sugar function \link[mlr3:msr]{msr()}:\preformatted{MeasureSurvLogloss$new()
+\link[mlr3:mlr_measures]{mlr_measures} or with the associated sugar function \link[mlr3:mlr_sugar]{msr()}:\preformatted{MeasureSurvLogloss$new()
 mlr_measures$get("surv.logloss")
 msr("surv.logloss")
 }
@@ -51,7 +51,7 @@ Other survival measures:
 \code{\link{mlr_measures_surv.hung_auc}},
 \code{\link{mlr_measures_surv.intloglossSE}},
 \code{\link{mlr_measures_surv.intlogloss}},
-\code{\link{mlr_measures_surv.loglossSE}},
+\code{\link{mlr_measures_surv.logloss_se}},
 \code{\link{mlr_measures_surv.maeSE}},
 \code{\link{mlr_measures_surv.mae}},
 \code{\link{mlr_measures_surv.mseSE}},
@@ -75,7 +75,7 @@ Other Probabilistic survival measures:
 \code{\link{mlr_measures_surv.graf}},
 \code{\link{mlr_measures_surv.intloglossSE}},
 \code{\link{mlr_measures_surv.intlogloss}},
-\code{\link{mlr_measures_surv.loglossSE}},
+\code{\link{mlr_measures_surv.logloss_se}},
 \code{\link{mlr_measures_surv.schmid}}
 
 Other distr survival measures: 
@@ -84,7 +84,7 @@ Other distr survival measures:
 \code{\link{mlr_measures_surv.graf}},
 \code{\link{mlr_measures_surv.intloglossSE}},
 \code{\link{mlr_measures_surv.intlogloss}},
-\code{\link{mlr_measures_surv.loglossSE}},
+\code{\link{mlr_measures_surv.logloss_se}},
 \code{\link{mlr_measures_surv.schmid}}
 }
 \concept{Probabilistic survival measures}
@@ -101,6 +101,9 @@ Very small number used to prevent log(0) error.}
 
 \item{\code{se}}{\code{(logical(1))} \cr
 If \code{TRUE} returns the standard error of the measure.}
+
+\item{\code{rm_cens}}{\code{(logical(1))} \cr
+If \code{TRUE} removes censored observations from the calculation.}
 }
 \if{html}{\out{</div>}}
 }
@@ -128,21 +131,21 @@ If \code{TRUE} returns the standard error of the measure.}
 \subsection{Method \code{new()}}{
 Creates a new instance of this \link[R6:R6Class]{R6} class.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MeasureSurvLogloss$new(id = "surv.logloss", eps = 1e-15, se = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MeasureSurvLogloss$new(eps = 1e-15, se = FALSE, rm_cens = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{id}}{(\code{character(1)})\cr
-Identifier for the new instance.}
-
 \item{\code{eps}}{(\code{numeric(1)})\cr
 Very small number to set zero-valued predicted probabilities to in order to prevent errors
 in log(0) calculation.}
 
 \item{\code{se}}{(\code{logical(1)})\cr
 If \code{TRUE} returns the standard error of the measure.}
+
+\item{\code{rm_cens}}{\code{(logical(1))} \cr
+If \code{TRUE} removes censored observations from the calculation.}
 }
 \if{html}{\out{</div>}}
 }

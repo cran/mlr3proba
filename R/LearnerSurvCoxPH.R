@@ -8,7 +8,7 @@
 #'
 #'
 #' @references
-#' \cite{mlr3proba}{cox_1972}
+#' `r tools::toRd(bibentries["cox_1972"])`
 #'
 #' @export
 LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH",
@@ -32,7 +32,7 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH",
         predict_types = c("distr", "crank", "lp"),
         feature_types = c("logical", "integer", "numeric", "factor"),
         properties = "weights",
-        packages = c("survival", "distr6", "pracma"),
+        packages = c("survival", "distr6"),
         man = "mlr3proba::mlr_learners_surv.coxph"
       )
     }
@@ -81,7 +81,7 @@ LearnerSurvCoxPH = R6Class("LearnerSurvCoxPH",
       lp = predict(self$model, type = "lp", newdata = newdata)
 
       # note the ranking of lp and crank is identical
-      PredictionSurv$new(task = task, crank = lp, distr = distr, lp = lp)
+      list(crank = lp, distr = distr, lp = lp)
     }
   )
 )
