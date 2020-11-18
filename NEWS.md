@@ -1,3 +1,10 @@
+
+
+# mlr3proba 0.2.5
+
+* `PipeOpCrankCompositor` updated to fix bottleneck in computation via `mean`. Now `Inf` or `NA` is replaced by `0` for `response` and `1000` for `crank`
+* Bug in `distr` predict types fixed that lead to fitting degenerate distributions and returning incorrect values for mean survival time and `crank`
+
 # mlr3proba 0.2.4
 
 * CRITICAL BUG FIX - `compose_crank` was previously returning ranks with the reverse ordering so that higher ranks implied higher risk not lower.
@@ -69,8 +76,8 @@
 * Early release due to backward compatibility error introduced by an upstream dependency
 * Minor updates to `mboost` family of learners: added `gehan` family, fixed parameters for `cindex`, added support for:  `weights`, `response` predict type, `importance`, `selected_features`
 * Minor internal changes
-* All density learners except `LearnerDensHist` and `LearnerDensKDE` have been moved to the [mlr3learners org](https://mlr3learners.mlr-org.com/dev/articles/learners/additional-learners.html)
-* The following survival learners have been moved to  the [mlr3learners org](https://mlr3learners.mlr-org.com/dev/articles/learners/additional-learners.html), LearnerSurv: `Flexible`, `ObliqueRSF`, `Penalized`, `RandomForestSRC`
+* All density learners except `LearnerDensHist` and `LearnerDensKDE` have been moved to the `mlr3learners org`
+* The following survival learners have been moved to  the `mlr3learners org`, LearnerSurv: `Flexible`, `ObliqueRSF`, `Penalized`, `RandomForestSRC`
 * Bugfix in `LearnerSurvXgboost` previously `lp` was erroneously returned as `exp(lp)`
 * Now licenced under LPGL-3
 

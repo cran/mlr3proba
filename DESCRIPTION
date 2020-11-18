@@ -1,6 +1,6 @@
 Package: mlr3proba
 Title: Probabilistic Supervised Learning for 'mlr3'
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: 
     c(person(given = "Raphael",
              family = "Sonabend",
@@ -77,8 +77,9 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'TaskGeneratorSimdens.R' 'TaskGeneratorSimsurv.R' 'TaskSurv.R'
         'TaskSurv_X.R' 'assertions.R' 'bibentries.R' 'cindex.R'
         'data.R' 'helpers.R' 'histogram.R' 'integrated_scores.R'
-        'pecs.R' 'pipelines.R' 'plot.R' 'surv_measures.R' 'zzz.R'
-Packaged: 2020-11-11 09:58:54 UTC; raphael
+        'pecs.R' 'pipelines.R' 'plot.R' 'surv_measures.R'
+        'surv_return.R' 'zzz.R'
+Packaged: 2020-11-18 08:35:41 UTC; raphael
 Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Franz Kiraly [aut],
   Michel Lang [aut] (<https://orcid.org/0000-0001-9754-0393>),
@@ -86,4 +87,4 @@ Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Andreas Bender [ctb] (<https://orcid.org/0000-0001-5628-8611>)
 Maintainer: Raphael Sonabend <raphael.sonabend.15@ucl.ac.uk>
 Repository: CRAN
-Date/Publication: 2020-11-11 13:40:14 UTC
+Date/Publication: 2020-11-18 23:20:02 UTC
