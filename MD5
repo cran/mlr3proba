@@ -1,6 +1,6 @@
-984a9ae02e4d85c6ecd814957255a8bd *DESCRIPTION
+3493e677c34b7634e9631df9d716faa6 *DESCRIPTION
 c25e99da9595dbe31bb77305d3941ff8 *NAMESPACE
-89b9bdb7471edb459ef6e86847f0d3ec *NEWS.md
+b2aeb0bad540bbf0ad7428783d744bc2 *NEWS.md
 ab3ea4b54c9bf6e34e13b738c57fb20c *R/LearnerDens.R
 c1441803484bb14496b65c771cc3fac3 *R/LearnerDensHistogram.R
 836fd78ff790b3f78531e6bc4441b018 *R/LearnerDensKDE.R
@@ -82,13 +82,13 @@ d6f1d89c8452b87833c66208662ccb19 *R/surv_measures.R
 e8fd255ce8a18f767f4b8473d19acc4c *R/surv_return.R
 3e113e8cdcbf28d8a66b4249852bbb2e *R/zzz.R
 6e8c4deb6c9b48e4ed9dfa1dece0c3a1 *README.md
-643fabe43fd636638c4542181d537d6e *build/partial.rdb
+6f1a83e3901342bc2d5ed82fec222f44 *build/partial.rdb
 d56f15527356727abe2746e59673b929 *data/actg.rda
 1e397ec924b0f12c5c368362f609bfed *data/gbcs.rda
 afef5d72d80201543a8fce5b206fc640 *data/grace.rda
 aa57708069c1f5fe44bee0d8cbbbdcb1 *data/whas.rda
 bc2aae788de2fa06f4ba9de7b5431045 *inst/extdata/unemployment.rds
-19e93581f69535458b652488f7eefa43 *inst/testthat/helper_autotest.R
+216ade65e6da4ae506ccfe6c5b570669 *inst/testthat/helper_autotest.R
 8256fd0b180f51ee0066fc5ef0fde50e *inst/testthat/helper_expectations.R
 532c5ca82b6a5e1d62ce92748cade823 *man/LearnerDens.Rd
 aa9a7af1b37aacbe7977bada96ffeaac *man/LearnerSurv.Rd
@@ -181,7 +181,7 @@ e33518964e0621bb19eb38160bbd350f *man/plot.LearnerSurv.Rd
 a3aa0e2b2a582db480102d21c41cba90 *src/RcppExports.cpp
 94efd9766fd9aa45503b79360f965db9 *src/survival_scores.cpp
 383c661ea368cbd7f31d6f6969f864fc *tests/testthat.R
-73cee1888a2b6122f4cf35053791e9cd *tests/testthat/Rplots.pdf
+1870e92c7fa54ae2479d9d0527526a5b *tests/testthat/Rplots.pdf
 0ad98667850b773380e5e474c346613c *tests/testthat/helper.R
 cbc51cbc31ace5e47fc8757db44db4a3 *tests/testthat/helper_pipeops.R
 d54a70b4b72a26d773804a4fd47f88a5 *tests/testthat/setup.R
@@ -194,7 +194,7 @@ b8eab7c5d2ef61111692f7a1eb2ee6fe *tests/testthat/test_helpers.R
 c81a9ffad164ae3d1545af05aa17e3f2 *tests/testthat/test_mlr_learners_density_hist.R
 21f762ea5e881dd95e7b8706f5fa519e *tests/testthat/test_mlr_learners_density_kde.R
 540833f7cc8d78e61d3e15337f5f3bc6 *tests/testthat/test_mlr_learners_surv_coxph.R
-eed16ffa4d0e7d76d26482f0a53fa257 *tests/testthat/test_mlr_learners_surv_kaplan.R
+79f0969c7b027904cf27b66cf4627083 *tests/testthat/test_mlr_learners_surv_kaplan.R
 bc7c00e38faa453be6f7c1a40c5369c7 *tests/testthat/test_mlr_learners_surv_rpart.R
 c171c9ca01a088a758fdc5a997725cd8 *tests/testthat/test_mlr_measures.R
 d030497777522cb2857c8cbd0f7c9698 *tests/testthat/test_mlr_measures_MeasureSurvIntegrated.R
