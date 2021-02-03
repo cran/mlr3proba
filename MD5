@@ -1,6 +1,6 @@
-7a99997b73aecef608ea61e0e35c7199 *DESCRIPTION
+32d3753290c84d32db9289c7c777d3d4 *DESCRIPTION
 c25e99da9595dbe31bb77305d3941ff8 *NAMESPACE
-d8e1108d8482e7370ceab5507175ea7b *NEWS.md
+4921625c83661c9ce4d5e4ba5207c2dc *NEWS.md
 ab3ea4b54c9bf6e34e13b738c57fb20c *R/LearnerDens.R
 3d48fb872141e7db7b8a867feebd74d0 *R/LearnerDensHistogram.R
 e5b8210a83be8b9496aa5045d2144e4a *R/LearnerDensKDE.R
@@ -66,7 +66,7 @@ f914e9072e39ddbb0e2834a52831517a *R/PredictionSurv.R
 2a9ab9dac779b92d0d435d9aa1be0411 *R/TaskDens_X.R
 41a02819a741c3b6326eaa31aa5aada2 *R/TaskGeneratorSimdens.R
 b0c66c0f3d769472a27537e0f18d72e6 *R/TaskGeneratorSimsurv.R
-39e0fa62233ec1fc924e4d06f4621bb2 *R/TaskSurv.R
+557e9dbd97f0303c3c6c438a1560dd0a *R/TaskSurv.R
 8e3ef5c840a5678a2d6f86ec9e413f79 *R/TaskSurv_X.R
 588905b216b57b9ffb977bbef8e3c41e *R/assertions.R
 72a09ebc03cb4d9ea799a6a526858f6b *R/bibentries.R
@@ -82,7 +82,7 @@ d6f1d89c8452b87833c66208662ccb19 *R/surv_measures.R
 e8fd255ce8a18f767f4b8473d19acc4c *R/surv_return.R
 98180c18cf84f66f5bb5a9fa5bf24b43 *R/zzz.R
 3a3d1b2712795b16252b59cdb9177752 *README.md
-f78c119a60fe6cfd0796d40509dc52de *build/partial.rdb
+64f243e8aab7179be515d65c1d7fea8e *build/partial.rdb
 d56f15527356727abe2746e59673b929 *data/actg.rda
 1e397ec924b0f12c5c368362f609bfed *data/gbcs.rda
 afef5d72d80201543a8fce5b206fc640 *data/grace.rda
@@ -103,7 +103,7 @@ bfe1f5b630d2a4356f3c4708642b1c6b *man/PipeOpTaskTransformer.Rd
 d29b06aa2530b38624e094316d99394e *man/PredictionDens.Rd
 1492bc7a22bac3839c1801cf2d449a67 *man/PredictionSurv.Rd
 6ca2239603d36e7dec295d5950d0f6f3 *man/TaskDens.Rd
-bec4be50d679475663fbe7d86dbb0ebc *man/TaskSurv.Rd
+676a757ed2e50b1d4e28465c2963a123 *man/TaskSurv.Rd
 a326ca31656c8d84e777bae1a2fbdd3f *man/actg.Rd
 bc5d9b0df114e1cb0b7dba4003d82bc8 *man/dot-surv_return.Rd
 e940729a79a088fc07a29c2123c4339f *man/figures/block.png
@@ -189,7 +189,7 @@ d54a70b4b72a26d773804a4fd47f88a5 *tests/testthat/setup.R
 583bd898ae343f59951e106240c948cf *tests/testthat/test_PredictionDens.R
 dc2dc64649cd9754615857ca4ebfdf5b *tests/testthat/test_PredictionSurv.R
 cd37fdecaa046e1867e1f009873f0fca *tests/testthat/test_TaskDens.R
-e1c327dfce627791ad28967ca9f9b4a6 *tests/testthat/test_TaskSurv.R
+d7ccd7ea86d3514e2803af03a149442b *tests/testthat/test_TaskSurv.R
 b8eab7c5d2ef61111692f7a1eb2ee6fe *tests/testthat/test_helpers.R
 c81a9ffad164ae3d1545af05aa17e3f2 *tests/testthat/test_mlr_learners_density_hist.R
 21f762ea5e881dd95e7b8706f5fa519e *tests/testthat/test_mlr_learners_density_kde.R
