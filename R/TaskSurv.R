@@ -15,7 +15,7 @@
 #' @export
 #' @examples
 #' library(mlr3)
-#' lung = mlr3misc::load_dataset("lung", package = "survival")
+#' lung = survival::lung
 #' lung$status = (lung$status == 2L)
 #' task = TaskSurv$new("lung",
 #'   backend = lung, time = "time",
@@ -40,22 +40,10 @@ TaskSurv = R6::R6Class("TaskSurv",
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
     #'
-    #' @param time (`character(1)`)\cr
-    #' Name of the column for event time if data is right censored, otherwise starting time if
-    #' interval censored.
-    #'
-    #' @param event (`character(1)`)\cr
-    #' Name of the column giving the event indicator.
-    #' If data is right censored then "0"/`FALSE` means alive (no event), "1"/`TRUE` means dead
-    #' (event). If `type` is `"interval"` then "0" means right censored, "1" means dead (event),
-    #' "2" means left censored, and "3" means interval censored. If `type` is `"interval2"` then
-    #' `event` is ignored.
-    #'
-    #' @param time2 (`character(1)`)\cr
-    #' Name of the column for ending time for interval censored data, otherwise ignored.
-    #'
-    #' @param type (`character(1)`)\cr
-    #' Name of the column giving the type of censoring. Default is 'right' censoring.
+    #' @template param_time
+    #' @template param_event
+    #' @template param_time2
+    #' @template param_type
     initialize = function(id, backend, time = "time", event = "event", time2,
       type = c("right", "left", "interval", "counting", "interval2", "mstate")) {
 
@@ -63,13 +51,15 @@ TaskSurv = R6::R6Class("TaskSurv",
 
       backend = as_data_backend(backend)
 
-      c_ev = backend$.__enclos_env__$private$.data[, event, with = FALSE][[1]]
-      if (type == "mstate") {
-        assert_factor(c_ev)
-      } else if (type == "interval") {
-        assert_integerish(c_ev, lower = 0, upper = 3)
-      } else if (!is.logical(c_ev)) {
-        assert_integerish(c_ev, lower = 0, upper = 2)
+      if (type != "interval2") {
+        c_ev = backend$.__enclos_env__$private$.data[, event, with = FALSE][[1]]
+        if (type == "mstate") {
+          assert_factor(c_ev)
+        } else if (type == "interval") {
+          assert_integerish(c_ev, lower = 0, upper = 3)
+        } else if (!is.logical(c_ev)) {
+          assert_integerish(c_ev, lower = 0, upper = 2)
+        }
       }
 
       private$.censtype = type

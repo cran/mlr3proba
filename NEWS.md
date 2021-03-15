@@ -1,3 +1,8 @@
+# mlr3proba 0.3.2
+
+* Patched bug causing ``"interval2"`` task type not to work
+* Fixed bug causing pipelines not to function correctly in `$aggregate`
+
 # mlr3proba 0.3.1
 
 * Reverted removal of `"interval2"`

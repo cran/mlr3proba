@@ -1,11 +1,11 @@
 Package: mlr3proba
 Title: Probabilistic Supervised Learning for 'mlr3'
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: 
     c(person(given = "Raphael",
              family = "Sonabend",
              role = c("aut", "cre"),
-             email = "raphael.sonabend.15@ucl.ac.uk",
+             email = "raphaelsonabend@gmail.com",
              comment = c(ORCID = "0000-0001-9225-4654")),
       person(given = "Franz",
              family = "Kiraly",
@@ -39,7 +39,7 @@ Imports: checkmate, data.table, distr6 (>= 1.4.5), mlr3 (>= 0.6.0),
         mlr3misc (>= 0.7.0), paradox (>= 0.1.0), R6, Rcpp (>= 1.0.4),
         survival
 Suggests: bujar, cubature, ggplot2, knitr, lgr, mlr3extralearners,
-        mlr3pipelines (>= 0.3.0), pracma, rpart, set6 (>= 0.1.7),
+        mlr3pipelines (>= 0.3.4), pracma, rpart, set6 (>= 0.1.7),
         simsurv, survAUC, testthat
 LinkingTo: Rcpp
 ByteCompile: true
@@ -75,16 +75,16 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'PredictionDataSurv.R' 'PredictionDens.R' 'PredictionSurv.R'
         'RcppExports.R' 'TaskDens.R' 'TaskDens_X.R'
         'TaskGeneratorSimdens.R' 'TaskGeneratorSimsurv.R' 'TaskSurv.R'
-        'TaskSurv_X.R' 'assertions.R' 'bibentries.R' 'cindex.R'
-        'data.R' 'helpers.R' 'histogram.R' 'integrated_scores.R'
-        'pecs.R' 'pipelines.R' 'plot.R' 'surv_measures.R'
-        'surv_return.R' 'zzz.R'
-Packaged: 2021-02-03 10:10:18 UTC; raphael
+        'TaskSurv_X.R' 'as_prediction_surv.R' 'as_task_surv.R'
+        'assertions.R' 'bibentries.R' 'cindex.R' 'data.R' 'helpers.R'
+        'histogram.R' 'integrated_scores.R' 'pecs.R' 'pipelines.R'
+        'plot.R' 'surv_measures.R' 'surv_return.R' 'zzz.R'
+Packaged: 2021-03-15 11:20:43 UTC; raphael
 Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Franz Kiraly [aut],
   Michel Lang [aut] (<https://orcid.org/0000-0001-9754-0393>),
   Nurul Ain Toha [ctb],
   Andreas Bender [ctb] (<https://orcid.org/0000-0001-5628-8611>)
-Maintainer: Raphael Sonabend <raphael.sonabend.15@ucl.ac.uk>
+Maintainer: Raphael Sonabend <raphaelsonabend@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-02-03 11:00:02 UTC
+Date/Publication: 2021-03-15 13:00:03 UTC
