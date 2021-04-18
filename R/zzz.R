@@ -90,60 +90,35 @@ register_mlr3 = function() {
   # x$add("regr.logloss", MeasureRegrLogloss)
 
   x$add("surv.graf", MeasureSurvGraf)
-  x$add("surv.grafSE", MeasureSurvGrafSE)
   x$add("surv.brier", MeasureSurvGraf)
   x$add("surv.schmid", MeasureSurvSchmid)
   x$add("surv.logloss", MeasureSurvLogloss)
-  x$add("surv.loglossSE", MeasureSurvLoglossSE)
   x$add("surv.intlogloss", MeasureSurvIntLogloss)
-  x$add("surv.intloglossSE", MeasureSurvIntLoglossSE)
 
    x$add("surv.cindex", MeasureSurvCindex)
-   # deprecated
-   x$add("surv.unoC", MeasureSurvUnoC)
-   x$add("surv.harrellC", MeasureSurvHarrellC)
-   x$add("surv.gonenC", MeasureSurvGonenC)
-   x$add("surv.beggC", MeasureSurvBeggC)
 
+  x$add("surv.dcalib", MeasureSurvDCalibration)
   x$add("surv.calib_beta", MeasureSurvCalibrationBeta)
   x$add("surv.calib_alpha", MeasureSurvCalibrationAlpha)
 
   x$add("surv.nagelk_r2", MeasureSurvNagelkR2)
   x$add("surv.oquigley_r2", MeasureSurvOQuigleyR2)
   x$add("surv.xu_r2", MeasureSurvXuR2)
-  # deprecated - deleted in next release
-  x$add("surv.nagelkR2", MeasureSurvNagelkR2)
-  x$add("surv.oquigleyR2", MeasureSurvOQuigleyR2)
-  x$add("surv.xuR2", MeasureSurvXuR2)
 
   x$add("surv.chambless_auc", MeasureSurvChamblessAUC)
   x$add("surv.hung_auc", MeasureSurvHungAUC)
   x$add("surv.uno_auc", MeasureSurvUnoAUC)
   x$add("surv.song_auc", MeasureSurvSongAUC)
-  # deprecated - deleted in next release
-  x$add("surv.chamblessAUC", MeasureSurvChamblessAUC)
-  x$add("surv.hungAUC", MeasureSurvHungAUC)
-  x$add("surv.unoAUC", MeasureSurvUnoAUC)
-  x$add("surv.songAUC", MeasureSurvSongAUC)
 
   x$add("surv.uno_tpr", MeasureSurvUnoTPR)
   x$add("surv.song_tpr", MeasureSurvSongTPR)
-  # deprecated - deleted in next release
-  x$add("surv.unoTPR", MeasureSurvUnoTPR)
-  x$add("surv.songTPR", MeasureSurvSongTPR)
 
   x$add("surv.uno_tnr", MeasureSurvUnoTNR)
   x$add("surv.song_tnr", MeasureSurvSongTNR)
-  # deprecated - deleted in next release
-  x$add("surv.unoTNR", MeasureSurvUnoTNR)
-  x$add("surv.songTNR", MeasureSurvSongTNR)
 
   x$add("surv.rmse", MeasureSurvRMSE)
-  x$add("surv.rmseSE", MeasureSurvRMSESE)
   x$add("surv.mse", MeasureSurvMSE)
-  x$add("surv.mseSE", MeasureSurvMSESE)
   x$add("surv.mae", MeasureSurvMAE)
-  x$add("surv.maeSE", MeasureSurvMAESE)
 }
 register_mlr3pipelines = function() {
   mlr3pipelines::add_class_hierarchy_cache(c("PredictionSurv", "Prediction"))
@@ -192,12 +167,12 @@ register_mlr3pipelines = function() {
   pkgname = vapply(hooks[-1], function(x) environment(x)$pkgname, NA_character_)
   setHook(event, hooks[pkgname != "mlr3proba"], action = "replace")
 
-   event = packageEvent("mlr3pipelines", "onLoad")
-   hooks = getHook(event)
-   pkgname = vapply(hooks[-1], function(x) environment(x)$pkgname, NA_character_)
-   setHook(event, hooks[pkgname != "mlr3proba"], action = "replace")
+  event = packageEvent("mlr3pipelines", "onLoad")
+  hooks = getHook(event)
+  pkgname = vapply(hooks[-1], function(x) environment(x)$pkgname, NA_character_)
+  setHook(event, hooks[pkgname != "mlr3proba"], action = "replace")
 
-   library.dynam.unload("mlr3proba", libpath)
+  library.dynam.unload("mlr3proba", libpath)
 }
 
 leanify_package()

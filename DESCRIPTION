@@ -1,6 +1,6 @@
 Package: mlr3proba
 Title: Probabilistic Supervised Learning for 'mlr3'
-Version: 0.3.2
+Version: 0.4.0
 Authors@R: 
     c(person(given = "Raphael",
              family = "Sonabend",
@@ -52,25 +52,21 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'LearnerSurvKaplan.R' 'LearnerSurvRpart.R' 'MeasureDens.R'
         'MeasureDensLogloss.R' 'MeasureRegrLogloss.R' 'MeasureSurv.R'
         'MeasureSurvIntegrated.R' 'MeasureSurvAUC.R'
-        'MeasureSurvBeggC.R' 'MeasureSurvCalibrationAlpha.R'
-        'MeasureSurvCalibrationBeta.R' 'MeasureSurvChamblessAUC.R'
-        'MeasureSurvCindex.R' 'MeasureSurvGonenHellersC.R'
-        'MeasureSurvGraf.R' 'MeasureSurvGrafSE.R'
-        'MeasureSurvHarrellC.R' 'MeasureSurvHungAUC.R'
-        'MeasureSurvIntLogloss.R' 'MeasureSurvIntLoglossSE.R'
-        'MeasureSurvLogloss.R' 'MeasureSurvLoglossSE.R'
-        'MeasureSurvMAE.R' 'MeasureSurvMAESE.R' 'MeasureSurvMSE.R'
-        'MeasureSurvMSESE.R' 'MeasureSurvNagelkR2.R'
-        'MeasureSurvOQuigleyR2.R' 'MeasureSurvRMSE.R'
-        'MeasureSurvRMSESE.R' 'MeasureSurvSchmid.R'
+        'MeasureSurvCalibrationAlpha.R' 'MeasureSurvCalibrationBeta.R'
+        'MeasureSurvChamblessAUC.R' 'MeasureSurvCindex.R'
+        'MeasureSurvDCalibration.R' 'MeasureSurvGraf.R'
+        'MeasureSurvHungAUC.R' 'MeasureSurvIntLogloss.R'
+        'MeasureSurvLogloss.R' 'MeasureSurvMAE.R' 'MeasureSurvMSE.R'
+        'MeasureSurvNagelkR2.R' 'MeasureSurvOQuigleyR2.R'
+        'MeasureSurvRMSE.R' 'MeasureSurvSchmid.R'
         'MeasureSurvSongAUC.R' 'MeasureSurvSongTNR.R'
         'MeasureSurvSongTPR.R' 'MeasureSurvUnoAUC.R'
-        'MeasureSurvUnoC.R' 'MeasureSurvUnoTNR.R' 'MeasureSurvUnoTPR.R'
-        'MeasureSurvXuR2.R' 'PipeOpCrankCompositor.R'
-        'PipeOpDistrCompositor.R' 'PipeOpTransformer.R'
-        'PipeOpPredTransformer.R' 'PipeOpPredRegrSurv.R'
-        'PipeOpPredSurvRegr.R' 'PipeOpProbregrCompositor.R'
-        'PipeOpSurvAvg.R' 'PipeOpTaskRegrSurv.R' 'PipeOpTaskSurvRegr.R'
+        'MeasureSurvUnoTNR.R' 'MeasureSurvUnoTPR.R' 'MeasureSurvXuR2.R'
+        'PipeOpCrankCompositor.R' 'PipeOpDistrCompositor.R'
+        'PipeOpTransformer.R' 'PipeOpPredTransformer.R'
+        'PipeOpPredRegrSurv.R' 'PipeOpPredSurvRegr.R'
+        'PipeOpProbregrCompositor.R' 'PipeOpSurvAvg.R'
+        'PipeOpTaskRegrSurv.R' 'PipeOpTaskSurvRegr.R'
         'PipeOpTaskTransformer.R' 'PredictionDataDens.R'
         'PredictionDataSurv.R' 'PredictionDens.R' 'PredictionSurv.R'
         'RcppExports.R' 'TaskDens.R' 'TaskDens_X.R'
@@ -79,7 +75,7 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'assertions.R' 'bibentries.R' 'cindex.R' 'data.R' 'helpers.R'
         'histogram.R' 'integrated_scores.R' 'pecs.R' 'pipelines.R'
         'plot.R' 'surv_measures.R' 'surv_return.R' 'zzz.R'
-Packaged: 2021-03-15 11:20:43 UTC; raphael
+Packaged: 2021-04-17 08:06:23 UTC; raphael
 Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Franz Kiraly [aut],
   Michel Lang [aut] (<https://orcid.org/0000-0001-9754-0393>),
@@ -87,4 +83,4 @@ Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Andreas Bender [ctb] (<https://orcid.org/0000-0001-5628-8611>)
 Maintainer: Raphael Sonabend <raphaelsonabend@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-03-15 13:00:03 UTC
+Date/Publication: 2021-04-18 04:50:06 UTC
