@@ -39,3 +39,13 @@ check_subsetpattern = function(x, choices, empty.ok = TRUE) { # nolint
       paste0("{", paste0(x, collapse = ", "), "}")))
   }
 }
+
+get_akritas_learner = function() {
+  require_namespaces("mlr3extralearners")
+  utils::getFromNamespace("LearnerSurvAkritas", "mlr3extralearners")
+}
+
+## access private environment of r6 class
+r6_private <- function(x) {
+  x$.__enclos_env__$private
+}
