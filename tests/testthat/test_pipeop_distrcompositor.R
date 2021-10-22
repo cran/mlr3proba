@@ -8,8 +8,8 @@ test_that("PipeOpDistrCompositor - overwrite = FALSE", {
   gr = mlr3pipelines::ppl("distrcompositor", lrn("surv.kaplan", id = "k2"), overwrite = FALSE)
   expect_silent(gr$train(task))
   expect_equal(
-    gr$predict(task)[[1]]$distr,
-    lrn("surv.kaplan", id = "k2")$train(task)$predict(task)$distr)
+    gr$predict(task)[[1]]$data$distr,
+    lrn("surv.kaplan", id = "k2")$train(task)$predict(task)$data$distr)
 })
 
 test_that("PipeOpDistrCompositor - overwrite = TRUE", {
@@ -20,7 +20,7 @@ test_that("PipeOpDistrCompositor - overwrite = TRUE", {
   expect_true("distr" %in% p$predict_types)
 
   gr = mlr3pipelines::ppl("distrcompositor", lrn("surv.kaplan", id = "k2"), overwrite = TRUE, form = "po",
-           graph_learner = TRUE)
+    graph_learner = TRUE)
   expect_silent(expect_prediction_surv(gr$train(task)$predict(task)))
 })
 
