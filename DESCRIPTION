@@ -1,6 +1,6 @@
 Package: mlr3proba
 Title: Probabilistic Supervised Learning for 'mlr3'
-Version: 0.4.3
+Version: 0.4.4
 Authors@R: 
     c(person(given = "Raphael",
              family = "Sonabend",
@@ -34,11 +34,11 @@ URL: https://mlr3proba.mlr-org.com,
         https://github.com/mlr-org/mlr3proba
 BugReports: https://github.com/mlr-org/mlr3proba/issues
 Depends: mlr3 (>= 0.13.0), R (>= 3.5.0)
-Imports: checkmate, data.table, distr6 (>= 1.6.4), mlr3misc (>= 0.7.0),
+Imports: checkmate, data.table, distr6 (>= 1.6.6), mlr3misc (>= 0.7.0),
         paradox (>= 0.1.0), R6, Rcpp (>= 1.0.4), survival
 Suggests: bujar, cubature, ggplot2, knitr, lgr, mlr3pipelines (>=
-        0.3.4), pracma, rpart, set6 (>= 0.1.7), simsurv, survAUC,
-        testthat
+        0.3.4), param6 (>= 0.2.4), pracma, rpart, set6 (>= 0.1.7),
+        simsurv, survAUC, testthat
 LinkingTo: Rcpp
 ByteCompile: true
 Encoding: UTF-8
@@ -74,7 +74,7 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'cindex.R' 'data.R' 'helpers.R' 'histogram.R'
         'integrated_scores.R' 'partition.R' 'pecs.R' 'pipelines.R'
         'plot.R' 'surv_measures.R' 'surv_return.R' 'zzz.R'
-Packaged: 2022-01-21 21:31:20 UTC; raphaelsonabend
+Packaged: 2022-02-15 21:05:58 UTC; rsonaben
 Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Franz Kiraly [aut],
   Michel Lang [aut] (<https://orcid.org/0000-0001-9754-0393>),
@@ -82,4 +82,4 @@ Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
   Andreas Bender [ctb] (<https://orcid.org/0000-0001-5628-8611>)
 Maintainer: Raphael Sonabend <raphaelsonabend@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-01-22 11:02:43 UTC
+Date/Publication: 2022-02-16 10:20:18 UTC
