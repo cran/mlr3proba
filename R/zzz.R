@@ -27,7 +27,7 @@ NULL
 #' @import paradox
 #' @importFrom R6 R6Class
 #' @importFrom utils data head tail
-#' @importFrom stats reformulate model.matrix model.frame sd predict
+#' @importFrom stats reformulate model.matrix model.frame sd predict complete.cases
 #' @importFrom survival Surv
 "_PACKAGE"
 # nolint end
@@ -109,6 +109,7 @@ register_mlr3 = function() {
   x$add("surv.brier", MeasureSurvGraf)
   x$add("surv.schmid", MeasureSurvSchmid)
   x$add("surv.logloss", MeasureSurvLogloss)
+  x$add("surv.rcll", MeasureSurvRCLL)
   x$add("surv.intlogloss", MeasureSurvIntLogloss)
 
   x$add("surv.cindex", MeasureSurvCindex)

@@ -1,10 +1,10 @@
 Package: mlr3proba
 Title: Probabilistic Supervised Learning for 'mlr3'
-Version: 0.4.4
+Version: 0.4.9
 Authors@R: 
     c(person(given = "Raphael",
              family = "Sonabend",
-             role = c("aut", "cre"),
+             role = "aut",
              email = "raphaelsonabend@gmail.com",
              comment = c(ORCID = "0000-0001-9225-4654")),
       person(given = "Franz",
@@ -13,7 +13,7 @@ Authors@R:
              email = "f.kiraly@ucl.ac.uk"),
       person(given = "Michel",
              family = "Lang",
-             role = "aut",
+             role = c("aut", "cre"),
              email = "michellang@gmail.com",
              comment = c(ORCID = "0000-0001-9754-0393")),
       person(given = "Nurul Ain",
@@ -33,9 +33,10 @@ License: LGPL-3
 URL: https://mlr3proba.mlr-org.com,
         https://github.com/mlr-org/mlr3proba
 BugReports: https://github.com/mlr-org/mlr3proba/issues
-Depends: mlr3 (>= 0.13.0), R (>= 3.5.0)
-Imports: checkmate, data.table, distr6 (>= 1.6.6), mlr3misc (>= 0.7.0),
-        paradox (>= 0.1.0), R6, Rcpp (>= 1.0.4), survival
+Depends: mlr3 (>= 0.13.3), R (>= 3.5.0)
+Imports: checkmate, data.table, distr6 (>= 1.6.8), mlr3misc (>= 0.7.0),
+        paradox (>= 0.1.0), R6, Rcpp (>= 1.0.4), survival,
+        survivalmodels (>= 0.1.12)
 Suggests: bujar, cubature, ggplot2, knitr, lgr, mlr3pipelines (>=
         0.3.4), param6 (>= 0.2.4), pracma, rpart, set6 (>= 0.1.7),
         simsurv, survAUC, testthat
@@ -55,11 +56,11 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'MeasureSurvGraf.R' 'MeasureSurvHungAUC.R'
         'MeasureSurvIntLogloss.R' 'MeasureSurvLogloss.R'
         'MeasureSurvMAE.R' 'MeasureSurvMSE.R' 'MeasureSurvNagelkR2.R'
-        'MeasureSurvOQuigleyR2.R' 'MeasureSurvRMSE.R'
-        'MeasureSurvSchmid.R' 'MeasureSurvSongAUC.R'
-        'MeasureSurvSongTNR.R' 'MeasureSurvSongTPR.R'
-        'MeasureSurvUnoAUC.R' 'MeasureSurvUnoTNR.R'
-        'MeasureSurvUnoTPR.R' 'MeasureSurvXuR2.R'
+        'MeasureSurvOQuigleyR2.R' 'MeasureSurvRCLL.R'
+        'MeasureSurvRMSE.R' 'MeasureSurvSchmid.R'
+        'MeasureSurvSongAUC.R' 'MeasureSurvSongTNR.R'
+        'MeasureSurvSongTPR.R' 'MeasureSurvUnoAUC.R'
+        'MeasureSurvUnoTNR.R' 'MeasureSurvUnoTPR.R' 'MeasureSurvXuR2.R'
         'PipeOpCrankCompositor.R' 'PipeOpDistrCompositor.R'
         'PipeOpTransformer.R' 'PipeOpPredTransformer.R'
         'PipeOpPredRegrSurv.R' 'PipeOpPredSurvRegr.R'
@@ -72,14 +73,15 @@ Collate: 'LearnerDens.R' 'LearnerDensHistogram.R' 'LearnerDensKDE.R'
         'TaskSurv_X.R' 'as_prediction_dens.R' 'as_prediction_surv.R'
         'as_task_dens.R' 'as_task_surv.R' 'assertions.R' 'bibentries.R'
         'cindex.R' 'data.R' 'helpers.R' 'histogram.R'
-        'integrated_scores.R' 'partition.R' 'pecs.R' 'pipelines.R'
-        'plot.R' 'surv_measures.R' 'surv_return.R' 'zzz.R'
-Packaged: 2022-02-15 21:05:58 UTC; rsonaben
-Author: Raphael Sonabend [aut, cre] (<https://orcid.org/0000-0001-9225-4654>),
+        'integrated_scores.R' 'mlr3proba-package.R' 'partition.R'
+        'pecs.R' 'pipelines.R' 'plot.R' 'surv_measures.R'
+        'surv_return.R' 'zzz.R'
+Packaged: 2022-04-21 11:02:38 UTC; michel
+Author: Raphael Sonabend [aut] (<https://orcid.org/0000-0001-9225-4654>),
   Franz Kiraly [aut],
-  Michel Lang [aut] (<https://orcid.org/0000-0001-9754-0393>),
+  Michel Lang [aut, cre] (<https://orcid.org/0000-0001-9754-0393>),
   Nurul Ain Toha [ctb],
   Andreas Bender [ctb] (<https://orcid.org/0000-0001-5628-8611>)
-Maintainer: Raphael Sonabend <raphaelsonabend@gmail.com>
+Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-02-16 10:20:18 UTC
+Date/Publication: 2022-04-25 13:30:02 UTC

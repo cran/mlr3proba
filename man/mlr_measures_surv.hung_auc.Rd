@@ -5,7 +5,7 @@
 \alias{MeasureSurvHungAUC}
 \title{Hung and Chiang's AUC Survival Measure}
 \description{
-Calls \code{\link[survAUC:AUC.hc]{survAUC::AUC.hc()}}.
+Calls \code{\link[survAUC:AUC.HungChiang]{survAUC::AUC.hc()}}.
 
 Assumes random censoring.
 }
@@ -53,6 +53,7 @@ Other survival measures:
 \code{\link{mlr_measures_surv.mse}},
 \code{\link{mlr_measures_surv.nagelk_r2}},
 \code{\link{mlr_measures_surv.oquigley_r2}},
+\code{\link{mlr_measures_surv.rcll}},
 \code{\link{mlr_measures_surv.rmse}},
 \code{\link{mlr_measures_surv.schmid}},
 \code{\link{mlr_measures_surv.song_auc}},

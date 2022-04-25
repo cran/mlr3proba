@@ -5,7 +5,7 @@
 \alias{MeasureSurvUnoTPR}
 \title{Uno's TPR Survival Measure}
 \description{
-Calls \code{\link[survAUC:sens.uno]{survAUC::sens.uno()}}.
+Calls \code{\link[survAUC:AUC.uno]{survAUC::sens.uno()}}.
 
 Assumes random censoring.
 
@@ -57,6 +57,7 @@ Other survival measures:
 \code{\link{mlr_measures_surv.mse}},
 \code{\link{mlr_measures_surv.nagelk_r2}},
 \code{\link{mlr_measures_surv.oquigley_r2}},
+\code{\link{mlr_measures_surv.rcll}},
 \code{\link{mlr_measures_surv.rmse}},
 \code{\link{mlr_measures_surv.schmid}},
 \code{\link{mlr_measures_surv.song_auc}},

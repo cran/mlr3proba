@@ -5,7 +5,7 @@
 \alias{MeasureSurvXuR2}
 \title{Xu and O'Quigley's R2 Survival Measure}
 \description{
-Calls \code{\link[survAUC:XO]{survAUC::XO()}}.
+Calls \code{\link[survAUC:OXS]{survAUC::XO()}}.
 
 Assumes Cox PH model specification.
 }
@@ -54,6 +54,7 @@ Other survival measures:
 \code{\link{mlr_measures_surv.mse}},
 \code{\link{mlr_measures_surv.nagelk_r2}},
 \code{\link{mlr_measures_surv.oquigley_r2}},
+\code{\link{mlr_measures_surv.rcll}},
 \code{\link{mlr_measures_surv.rmse}},
 \code{\link{mlr_measures_surv.schmid}},
 \code{\link{mlr_measures_surv.song_auc}},

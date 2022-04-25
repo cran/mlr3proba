@@ -23,14 +23,16 @@ test_that("mlr_measures", {
 
     expect_measure(m)
 
-    perf = pred$score(m, task = task, train_set = seq(task$nrow), learner = learner)
+    expect_silent({
+      perf = pred$score(m, task = task, train_set = seq(task$nrow), learner = learner)
+    })
     expect_number(perf, na.ok = "na_score" %in% m$properties)
 
     if (key %in% paste0("surv.", c("schmid", "graf", "intlogloss", "logloss", "mae", "mse",
       "rmse", "calib_alpha", "calib_beta"))) {
       m = suppressWarnings(msr(key, se = TRUE))
       perf = pred$score(m, task = task, train_set = seq(task$nrow), learner = learner)
-      expect_number(perf, na.ok = "na_score" %in% m$properties)
+      expect_number(perf, na.ok = TRUE)
     }
   }
 })
@@ -54,11 +56,11 @@ test_that("integrated_prob_losses", {
                                          proper = TRUE)),
                             "scalar numeric")
   )
+
+  prediction$score(msr("surv.intlogloss", integrated = TRUE, proper = TRUE, times = 100:110))
   expect_silent(prediction$score(lapply(probs, msr, integrated = TRUE, proper = TRUE)))
-  expect_error(prediction$score(lapply(probs, msr, integrated = TRUE, times = c(34:38),
-    proper = TRUE)), "Requested times")
-  expect_silent(prediction$score(lapply(probs, msr, integrated = TRUE, times = c(100:110),
-    proper = TRUE)))
+  expect_error(prediction$score(lapply(probs, msr, integrated = TRUE, times = c(34:38), proper = TRUE)), "Requested times")
+  expect_silent(prediction$score(lapply(probs, msr, integrated = TRUE, times = c(100:110), proper = TRUE)))
   expect_silent(prediction$score(lapply(probs, msr, integrated = FALSE, times = 80, proper = TRUE)))
 })
 
@@ -103,7 +105,7 @@ test_that("t_max, p_max", {
   m2 = p$score(msr("surv.graf", t_max = 100))
   expect_equal(m1, m2)
 
-  s = survival::survfit(t$formula(1), data = t$data())
+  s = t$kaplan()
 
   t_max = s$time[which(1 - s$n.risk / s$n > 0.3)[1]]
 

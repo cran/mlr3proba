@@ -5,7 +5,7 @@
 \alias{MeasureSurvNagelkR2}
 \title{Nagelkerke's R2 Survival Measure}
 \description{
-Calls \code{\link[survAUC:Nagelk]{survAUC::Nagelk()}}.
+Calls \code{\link[survAUC:OXS]{survAUC::Nagelk()}}.
 
 Assumes Cox PH model specification.
 }
@@ -52,6 +52,7 @@ Other survival measures:
 \code{\link{mlr_measures_surv.mae}},
 \code{\link{mlr_measures_surv.mse}},
 \code{\link{mlr_measures_surv.oquigley_r2}},
+\code{\link{mlr_measures_surv.rcll}},
 \code{\link{mlr_measures_surv.rmse}},
 \code{\link{mlr_measures_surv.schmid}},
 \code{\link{mlr_measures_surv.song_auc}},

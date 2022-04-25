@@ -1,4 +1,29 @@
-# mlr3proba 0.4.3.9000
+# mlr3proba 0.4.9
+
+* Fixed bug in surv.logloss causing IPCW weighting to not be applied correctly
+
+# mlr3proba 0.4.8
+
+* Bug fixes in AUC measures
+
+# mlr3proba 0.4.7
+
+* Add right-censored log loss
+* Fix bug in {rpart} where model was being discarded when set to be kept. Parameter `model` now called `keep_model`.
+
+# mlr3proba 0.4.6
+
+* Patch for upstream breakages
+* Add `TaskSurv$kaplan` method
+* {survivalmodels} now imported (previously suggested)
+
+# mlr3proba 0.4.5
+
+* Improved reduction from survival matrix predictions to ranking predictions
+* Fixed cindex bug when all predictions equal
+* Fix for valgrind
+
+# mlr3proba 0.4.4
 
 * Minor change to how distributions are created to better support improper distributions
 * Fixed bug in `simsurv` task that made it impossible to predict the target

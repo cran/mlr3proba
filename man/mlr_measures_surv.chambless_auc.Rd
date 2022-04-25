@@ -5,7 +5,7 @@
 \alias{MeasureSurvChamblessAUC}
 \title{Chambless and Diao's AUC Survival Measure}
 \description{
-Calls \code{\link[survAUC:AUC.cd]{survAUC::AUC.cd()}}.
+Calls \code{\link[survAUC:AUC.ChamDiao]{survAUC::AUC.cd()}}.
 
 Assumes Cox PH model specification.
 }
@@ -53,6 +53,7 @@ Other survival measures:
 \code{\link{mlr_measures_surv.mse}},
 \code{\link{mlr_measures_surv.nagelk_r2}},
 \code{\link{mlr_measures_surv.oquigley_r2}},
+\code{\link{mlr_measures_surv.rcll}},
 \code{\link{mlr_measures_surv.rmse}},
 \code{\link{mlr_measures_surv.schmid}},
 \code{\link{mlr_measures_surv.song_auc}},
